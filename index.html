@@ -2988,11 +2988,12 @@ function renderMessages(msgs,nome){
   }
   let html='',lastDate='',lastPapel='';
   msgs.forEach(m=>{
-    // Converter UTC para America/Recife (UTC-3)
-    const dUTC=new Date(m.criado_em);
-    const dRec=new Date(dUTC.toLocaleString('en-US',{timeZone:'America/Recife'}));
-    const dateStr=dRec.toLocaleDateString('pt-BR');
-    const timeStr=dRec.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    // O banco salva o horário já em America/Recife (sem marcador de fuso).
+    // Removemos qualquer 'Z' ou offset para o JS não reinterpretar como UTC.
+    const raw=String(m.criado_em||'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');
+    const d=new Date(raw);
+    const dateStr=d.toLocaleDateString('pt-BR');
+    const timeStr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const isJulia=m.papel==='julia'||m.papel==='assistente';
     const side=isJulia?'julia':'';
     if(dateStr!==lastDate){html+=`<div class="date-sep">${dateStr}</div>`;lastDate=dateStr;lastPapel='';}
@@ -3825,9 +3826,11 @@ function formatPhone(p){
 }
 function relTime(iso){
   if(!iso)return'';
-  // Forçar parse correto do timestamp UTC
-  const isoFixed=iso.endsWith('Z')||iso.includes('+')? iso : iso+'Z';
-  const diff=Date.now()-new Date(isoFixed).getTime();
+  // O banco salva já em horário local (Recife), sem marcador de fuso.
+  // Removemos qualquer Z/offset e comparamos com o horário local atual de Recife.
+  const raw=String(iso).replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');
+  const nowRec=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Recife'}));
+  const diff=nowRec.getTime()-new Date(raw).getTime();
   const m=Math.floor(diff/60000);
   const h=Math.floor(diff/3600000);
   if(m<2)return'agora';
@@ -3837,7 +3840,8 @@ function relTime(iso){
 }
 function fmtHora(iso){
   if(!iso)return'';
-  return new Date(iso).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Recife'});
+  const raw=String(iso).replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');
+  return new Date(raw).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 }
 // ═══ INTEGRAÇÕES ═══
 const integConfig={wa:{},meta:{},hubspot:{},rd:{},pipedrive:{},generic:{}};
