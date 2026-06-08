@@ -1910,220 +1910,186 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
 
 
   <!-- ═══ INTELIGÊNCIA JULIA ═══ -->
+  <!-- ═══ INTELIGÊNCIA JULIA — EDITOR SIMPLES ═══ -->
   <div class="julia-screen" id="juliaScreen">
+
     <!-- Header -->
     <div class="julia-hdr">
       <div class="julia-hdr-l">
         <div class="julia-hdr-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
-        <div><div class="julia-hdr-title">Treinar Julia</div><div class="julia-hdr-sub">Configure como a Julia deve se comportar e atender seus clientes</div></div>
+        <div>
+          <div class="julia-hdr-title">Inteligência Julia</div>
+          <div class="julia-hdr-sub">Configure o prompt da Julia — ela usará isso como base para todas as respostas</div>
+        </div>
       </div>
       <div class="julia-hdr-r">
-        <button class="julia-preview-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ver como funciona</button>
-        <button class="julia-save-btn" onclick="salvarJulia()">Salvar configurações</button>
+        <button class="julia-preview-btn" onclick="verPrompt()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Ver como funciona
+        </button>
+        <button class="julia-save-btn" onclick="salvarJulia()">
+          <span id="juliaSaveTxt">Salvar configurações</span>
+          <span id="juliaSaveSpin" style="display:none;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;"></span>
+        </button>
       </div>
     </div>
 
     <!-- Dica rápida -->
     <div class="julia-tip">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span class="julia-tip-txt"><strong style="color:#aa00ff;">Dica rápida:</strong> quanto mais informações você fornecer, melhor a Julia entenderá seus clientes e mais assertivas serão as respostas.</span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="julia-tip-txt"><strong style="color:#aa00ff;">Dica rápida:</strong> quanto mais detalhado o prompt, mais assertivas serão as respostas da Julia. Inclua nome da empresa, produto, tom de voz e regras de atendimento.</span>
     </div>
 
-    <!-- Body -->
-    <div class="julia-body">
+    <!-- Body: editor + sidebar -->
+    <div class="julia-body" style="flex-direction:row;gap:16px;padding:16px 24px 24px;">
 
-      <!-- Layout principal: conteúdo + sidebar -->
-      <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start;">
+      <!-- EDITOR PRINCIPAL -->
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0;">
+        <div style="background:#fff;border-radius:14px;border:1px solid rgba(13,26,110,.07);box-shadow:0 1px 4px rgba(0,0,0,.04);overflow:hidden;display:flex;flex-direction:column;min-height:0;">
 
-        <!-- COLUNA ESQUERDA -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
-
-          <!-- 1. Perfil da Julia -->
-          <div class="julia-card">
-            <div class="julia-card-num">1. Perfil da Julia</div>
-            <div class="julia-card-title">Perfil da Julia</div>
-            <div class="julia-card-sub">Defina o estilo de atendimento e o objetivo principal da Julia.</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-              <div>
-                <label class="julia-field-lbl">Nome da atendente</label>
-                <input class="julia-field-inp" id="juliaName" value="Julia" oninput="atualizarResumoJulia()"/>
-                <div class="julia-field-hint">Este é o nome que aparecerá para seus clientes.</div>
-              </div>
-              <div>
-                <label class="julia-field-lbl">Estilo de atendimento</label>
-                <div class="julia-styles" style="grid-template-columns:repeat(4,1fr);margin-top:6px;">
-                  <div class="julia-style-card active" onclick="selectStyle(this,'formal')" data-style="formal">
-                    <div class="julia-style-ico">💼</div>
-                    <div class="julia-style-name">Formal</div>
-                    <div class="julia-style-desc">Profissional e objetiva</div>
-                  </div>
-                  <div class="julia-style-card" onclick="selectStyle(this,'consultiva')" data-style="consultiva">
-                    <div class="julia-style-ico">🤝</div>
-                    <div class="julia-style-name">Consultiva</div>
-                    <div class="julia-style-desc">Foca em entender e orientar</div>
-                  </div>
-                  <div class="julia-style-card" onclick="selectStyle(this,'amigavel')" data-style="amigavel">
-                    <div class="julia-style-ico">😊</div>
-                    <div class="julia-style-name">Amigável</div>
-                    <div class="julia-style-desc">Próxima, leve e acolhedora</div>
-                  </div>
-                  <div class="julia-style-card" onclick="selectStyle(this,'premium')" data-style="premium">
-                    <div class="julia-style-ico">⭐</div>
-                    <div class="julia-style-name">Premium</div>
-                    <div class="julia-style-desc">Sofisticada e exclusiva</div>
-                  </div>
-                </div>
-              </div>
+          <!-- Toolbar do editor -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(13,26,110,.07);background:#fafafa;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div id="jeTabPrompt" style="font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;background:rgba(170,0,255,.1);color:#aa00ff;border:1px solid rgba(170,0,255,.25);" onclick="jeSetTab('prompt',this)">📝 Prompt da Julia</div>
+              <div id="jeTabVars" style="font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;color:rgba(13,26,110,.4);border:1px solid transparent;" onclick="jeSetTab('vars',this)">🔧 Variáveis</div>
+              <div id="jeTabTest" style="font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;color:rgba(13,26,110,.4);border:1px solid transparent;" onclick="jeSetTab('test',this)">🧪 Testar</div>
             </div>
-            <label class="julia-field-lbl">Objetivo principal</label>
-            <div class="julia-objectives">
-              <div class="julia-obj-card active" onclick="selectObj(this,'leads')" data-obj="leads">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                <div class="julia-obj-name">Captar leads</div>
-                <div class="julia-obj-desc">Gerar e qualificar novos contatos</div>
-              </div>
-              <div class="julia-obj-card" onclick="selectObj(this,'visita')" data-obj="visita">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.4)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <div class="julia-obj-name">Agendar visita</div>
-                <div class="julia-obj-desc">Marcar visitas ou reuniões</div>
-              </div>
-              <div class="julia-obj-card" onclick="selectObj(this,'venda')" data-obj="venda">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.4)" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                <div class="julia-obj-name">Fechar venda</div>
-                <div class="julia-obj-desc">Conduzir até o fechamento</div>
-              </div>
-              <div class="julia-obj-card" onclick="selectObj(this,'duvidas')" data-obj="duvidas">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.4)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                <div class="julia-obj-name">Tirar dúvidas</div>
-                <div class="julia-obj-desc">Esclarecer dúvidas e informar</div>
-              </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span id="jeCharBadge" style="font-size:9px;color:rgba(13,26,110,.3);font-family:'Sora',sans-serif;">0 / 5000</span>
+              <button onclick="jeLimpar()" style="font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;background:none;border:1px solid rgba(13,26,110,.12);color:rgba(13,26,110,.5);cursor:pointer;font-family:'Sora',sans-serif;">Limpar</button>
+              <button onclick="jeCarregarExemplo()" style="font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;background:none;border:1px solid rgba(13,26,110,.12);color:rgba(13,26,110,.5);cursor:pointer;font-family:'Sora',sans-serif;">Carregar exemplo</button>
             </div>
           </div>
 
-          <!-- 2/3/4 como a Julia age, pode, não pode -->
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-
-            <!-- 2. Como deve agir -->
-            <div class="julia-card">
-              <div class="julia-card-num">2. Como a Julia deve agir</div>
-              <div class="julia-card-title">Como a Julia deve agir</div>
-              <div class="julia-card-sub">Oriente o comportamento durante os atendimentos.</div>
-              <div class="julia-checklist" id="juliaAgir">
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Cumprimentar o cliente ao iniciar</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Fazer perguntas para entender a necessidade</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Usar informações do Database nas respostas</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Apresentar opções relevantes de produtos</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Conduzir o cliente ao próximo passo</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Encerrar o atendimento de forma cordial</span></div>
-              </div>
-              <div class="julia-card-dica"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="julia-card-dica-txt">Essas orientações ajudam a Julia a ter conversas mais naturais e eficientes.</span></div>
+          <!-- Textarea com numeração de linhas -->
+          <div id="jePanelPrompt" style="flex:1;position:relative;display:flex;flex-direction:column;min-height:0;">
+            <div id="jeLineNumbers" style="position:absolute;left:0;top:0;bottom:0;width:40px;background:#f8f8ff;border-right:1px solid rgba(13,26,110,.06);display:flex;flex-direction:column;padding:14px 0;pointer-events:none;overflow:hidden;">
+              <div style="font-size:11px;color:rgba(13,26,110,.2);text-align:right;padding-right:8px;line-height:1.6;font-family:monospace;min-height:17.6px;">1</div>
             </div>
+            <textarea
+              id="jePromptTextarea"
+              style="flex:1;width:100%;padding:14px 14px 14px 50px;border:none;outline:none;resize:none;font-size:12px;line-height:1.6;color:#1a1a2e;font-family:'Sora',sans-serif;background:#fff;min-height:480px;box-sizing:border-box;"
+              placeholder="Cole aqui o prompt completo da Julia...
 
-            <!-- 3. O que pode fazer -->
-            <div class="julia-card">
-              <div class="julia-card-num">3. O que a Julia pode fazer</div>
-              <div class="julia-card-title">O que a Julia pode fazer</div>
-              <div class="julia-card-sub">Selecione as ações permitidas durante o atendimento.</div>
-              <div class="julia-checklist">
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Usar emojis nas respostas</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Enviar fotos da biblioteca</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Enviar PDFs da biblioteca</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Enviar vídeos da biblioteca</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Fazer perguntas de qualificação</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Sugerir produtos/serviços</span></div>
-                <div class="julia-check-item" onclick="toggleCheck(this)"><div class="julia-check-box"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="julia-check-lbl">Agendar atendimento humano</span></div>
-              </div>
-              <div class="julia-card-dica"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="julia-card-dica-txt">Mais opções ativadas permitem um atendimento mais completo.</span></div>
-            </div>
-
-            <!-- 4. O que não pode -->
-            <div class="julia-card">
-              <div class="julia-card-num">4. O que a Julia não pode fazer</div>
-              <div class="julia-card-title">O que a Julia não pode fazer</div>
-              <div class="julia-card-sub">Defina as restrições para manter a qualidade.</div>
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <div class="julia-restrict-item"><div class="julia-restrict-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><span class="julia-restrict-lbl">Inventar informações ou dados</span></div>
-                <div class="julia-restrict-item"><div class="julia-restrict-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><span class="julia-restrict-lbl">Informar preços não cadastrados</span></div>
-                <div class="julia-restrict-item"><div class="julia-restrict-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><span class="julia-restrict-lbl">Prometer descontos ou condições especiais</span></div>
-                <div class="julia-restrict-item"><div class="julia-restrict-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><span class="julia-restrict-lbl">Falar sobre concorrentes</span></div>
-                <div class="julia-restrict-item"><div class="julia-restrict-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><span class="julia-restrict-lbl">Respostas fora do contexto da empresa</span></div>
-                <div class="julia-restrict-item"><div class="julia-restrict-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><span class="julia-restrict-lbl">Compartilhar informações internas</span></div>
-              </div>
-              <div class="julia-card-dica"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="julia-card-dica-txt">Estas restrições protegem sua empresa e garantem informações precisas.</span></div>
-            </div>
-
+Exemplo:
+Você é Julia, assistente virtual da Blee Social.
+Estilo: Premium — sofisticada e exclusiva.
+Objetivo: fechar vendas conduzindo o cliente ao pagamento."
+              oninput="jeOnInput(this)"
+              onscroll="jeSync(this)"
+              spellcheck="false"
+            ></textarea>
           </div>
 
-          <!-- 5. Instruções personalizadas -->
-          <div class="julia-card">
-            <div class="julia-card-num">5. Instruções personalizadas (opcional)</div>
-            <div class="julia-card-title">Instruções personalizadas</div>
-            <div class="julia-card-sub">Adicione instruções específicas para tornar a Julia ainda mais alinhada com seu negócio.</div>
-            <textarea class="julia-textarea" id="juliaPrompt" placeholder="ex: A Julia é especialista em imóveis na planta em Recife e região. Foque sempre nos diferenciais dos empreendimentos, localização, qualidade de vida e facilidades de pagamento. Se não souber algo, seja transparente e ofereça encaminhar para um atendente humano..." oninput="updateJuliaChar(this);atualizarResumoJulia()"></textarea>
-            <div class="julia-char-count" id="juliaCharCount">0/2000 caracteres</div>
+          <!-- Painel Variáveis -->
+          <div id="jePanelVars" style="display:none;padding:16px;background:#f9f9ff;border-top:1px solid rgba(13,26,110,.06);">
+            <div style="font-size:11px;font-weight:700;color:#1a1a2e;margin-bottom:10px;font-family:'Sora',sans-serif;">Variáveis disponíveis — clique para inserir</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span onclick="jeInserirVar('{nome_cliente}')" style="font-size:10px;padding:4px 10px;background:#fff;border:1px solid rgba(13,26,110,.12);border-radius:6px;cursor:pointer;color:#0d1a6e;font-family:monospace;">{nome_cliente}</span>
+              <span onclick="jeInserirVar('{produto_interesse}')" style="font-size:10px;padding:4px 10px;background:#fff;border:1px solid rgba(13,26,110,.12);border-radius:6px;cursor:pointer;color:#0d1a6e;font-family:monospace;">{produto_interesse}</span>
+              <span onclick="jeInserirVar('{historico_conversa}')" style="font-size:10px;padding:4px 10px;background:#fff;border:1px solid rgba(13,26,110,.12);border-radius:6px;cursor:pointer;color:#0d1a6e;font-family:monospace;">{historico_conversa}</span>
+              <span onclick="jeInserirVar('{data_atual}')" style="font-size:10px;padding:4px 10px;background:#fff;border:1px solid rgba(13,26,110,.12);border-radius:6px;cursor:pointer;color:#0d1a6e;font-family:monospace;">{data_atual}</span>
+              <span onclick="jeInserirVar('{nome_empresa}')" style="font-size:10px;padding:4px 10px;background:#fff;border:1px solid rgba(13,26,110,.12);border-radius:6px;cursor:pointer;color:#0d1a6e;font-family:monospace;">{nome_empresa}</span>
+            </div>
           </div>
 
+          <!-- Painel Testar -->
+          <div id="jePanelTest" style="display:none;padding:16px;background:#f9f9ff;border-top:1px solid rgba(13,26,110,.06);">
+            <div style="font-size:11px;font-weight:700;color:#1a1a2e;margin-bottom:8px;font-family:'Sora',sans-serif;">Testar prompt</div>
+            <div style="display:flex;gap:8px;">
+              <input id="jeTestInput" placeholder="Digite uma mensagem de teste..." style="flex:1;padding:8px 12px;border:1px solid rgba(13,26,110,.12);border-radius:8px;font-size:11px;outline:none;font-family:'Sora',sans-serif;"/>
+              <button onclick="jeTestar()" style="padding:8px 14px;background:#0d1a6e;color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;">Enviar</button>
+            </div>
+            <div id="jeTestResult" style="margin-top:10px;font-size:11px;color:rgba(13,26,110,.5);display:none;font-family:'Sora',sans-serif;"></div>
+          </div>
+
+          <!-- Footer do editor -->
+          <div style="padding:10px 14px;border-top:1px solid rgba(13,26,110,.06);display:flex;align-items:center;justify-content:space-between;background:#fafafa;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div id="jeStatusDot" style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 5px rgba(34,197,94,.7);"></div>
+              <span id="jeStatusTxt" style="font-size:10px;color:rgba(13,26,110,.35);font-family:'Sora',sans-serif;">Prompt salvo no Supabase</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button onclick="jeCopiar()" style="font-size:10px;font-weight:600;padding:5px 12px;border-radius:6px;background:none;border:1px solid rgba(13,26,110,.12);color:rgba(13,26,110,.5);cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:5px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar
+              </button>
+              <button onclick="salvarJulia()" style="font-size:10px;font-weight:700;padding:5px 14px;border-radius:6px;background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;border:none;cursor:pointer;font-family:'Sora',sans-serif;box-shadow:0 2px 8px rgba(170,0,255,.25);">Salvar agora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR DIREITA -->
+      <div style="width:300px;min-width:300px;display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Resumo da configuração -->
+        <div style="background:#fff;border-radius:14px;border:1px solid rgba(13,26,110,.07);padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+          <div style="font-size:12px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;margin-bottom:3px;">Resumo da configuração</div>
+          <div style="font-size:10px;color:rgba(13,26,110,.35);font-family:'Sora',sans-serif;margin-bottom:12px;">Veja como a Julia foi configurada até agora.</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:26px;height:26px;border-radius:7px;background:rgba(170,0,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <div><div style="font-size:10px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">Estilo: <span id="jeResumoEstilo">Premium</span></div><div style="font-size:9px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;margin-top:1px;" id="jeResumoEstiloDesc">Sofisticada e exclusiva</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:26px;height:26px;border-radius:7px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/></svg></div>
+              <div><div style="font-size:10px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">Objetivo: <span id="jeResumoObj">Fechar venda</span></div><div style="font-size:9px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;margin-top:1px;" id="jeResumoObjDesc">Conduzir até o fechamento</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:26px;height:26px;border-radius:7px;background:rgba(13,26,110,.07);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.5)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+              <div><div style="font-size:10px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">Tamanho do prompt</div><div style="font-size:9px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;margin-top:1px;" id="jeResumoTamanho">0 caracteres</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:26px;height:26px;border-radius:7px;background:rgba(170,0,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              <div><div style="font-size:10px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">Última atualização</div><div style="font-size:9px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;margin-top:1px;" id="jeUltimaAtt">Nunca salvo</div></div>
+            </div>
+          </div>
         </div>
 
-        <!-- COLUNA DIREITA (sidebar) -->
-        <div class="julia-side">
-
-          <!-- Resumo da configuração -->
-          <div class="julia-resumo-card">
-            <div class="julia-resumo-title">Resumo da configuração</div>
-            <div class="julia-resumo-sub">Veja como a Julia foi configurada até agora.</div>
-            <div class="julia-resumo-items">
-              <div class="julia-resumo-item">
-                <div class="julia-resumo-ico" style="background:rgba(170,0,255,.1);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                <div><div class="julia-resumo-item-title">Estilo: <span id="resumoEstilo">Formal</span></div><div class="julia-resumo-item-sub" id="resumoEstiloDesc">Profissional e objetiva</div></div>
-              </div>
-              <div class="julia-resumo-item">
-                <div class="julia-resumo-ico" style="background:rgba(34,197,94,.1);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-                <div><div class="julia-resumo-item-title">Objetivo: <span id="resumoObj">Captar leads</span></div><div class="julia-resumo-item-sub" id="resumoObjDesc">Gerar e qualificar novos contatos</div></div>
-              </div>
-              <div class="julia-resumo-item">
-                <div class="julia-resumo-ico" style="background:rgba(59,130,246,.1);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                <div><div class="julia-resumo-item-title">Tom de voz: <span id="resumoTom">Formal</span></div><div class="julia-resumo-item-sub">Comunicação profissional</div></div>
-              </div>
-              <div class="julia-resumo-item">
-                <div class="julia-resumo-ico" style="background:rgba(13,26,110,.08);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.5)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
-                <div><div class="julia-resumo-item-title">Biblioteca conectada</div><div class="julia-resumo-item-sub" id="resumoProdutos">— produtos cadastrados</div></div>
-              </div>
+        <!-- Preview do chat -->
+        <div style="background:#fff;border-radius:14px;border:1px solid rgba(13,26,110,.07);padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+          <div style="font-size:12px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;margin-bottom:3px;">Preview da Julia</div>
+          <div style="font-size:10px;color:rgba(13,26,110,.35);font-family:'Sora',sans-serif;margin-bottom:12px;">Como a Julia aparece para o cliente</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(13,26,110,.06);">
+            <div id="jeChatAv" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#aa00ff,#7b00d4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;">J</div>
+            <div>
+              <div id="jeChatNome" style="font-size:12px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">Julia</div>
+              <div style="font-size:9px;color:#22c55e;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:4px;"><div style="width:5px;height:5px;border-radius:50%;background:#22c55e;"></div>Online</div>
             </div>
           </div>
-
-          <!-- Preview chat -->
-          <div class="julia-chat-preview">
-            <div class="julia-chat-hdr">
-              <div class="julia-chat-av" id="juliaAvatarPreview">J</div>
-              <div>
-                <div class="julia-chat-name" id="juliaNomePreview">Julia</div>
-                <div class="julia-chat-status"><div class="julia-chat-dot"></div>Online</div>
-              </div>
-            </div>
-            <div class="julia-msgs">
-              <div class="julia-msg bot" id="juliaMsg1">Olá! Sou a Julia, como posso ajudar você hoje? 😊</div>
-              <div class="julia-msg user">Quero um apartamento com 2 quartos e varanda.</div>
-              <div class="julia-msg bot" id="juliaMsg2">Perfeito! Tenho várias opções que podem te interessar. Posso te mostrar algumas?</div>
-            </div>
-            <div class="julia-chat-input"><span>Digite sua mensagem...</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.3)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+            <div id="jeChatMsg1" style="max-width:90%;background:#f0f2ff;color:#1a1a2e;border-radius:10px;padding:8px 11px;font-size:10px;font-family:'Sora',sans-serif;line-height:1.5;border-bottom-left-radius:3px;">Olá! Sou a Julia. Como posso ajudar você hoje?</div>
+            <div style="max-width:90%;background:#0d1a6e;color:#fff;border-radius:10px;padding:8px 11px;font-size:10px;font-family:'Sora',sans-serif;line-height:1.5;align-self:flex-end;border-bottom-right-radius:3px;">Quero saber sobre o curso</div>
+            <div style="max-width:90%;background:#f0f2ff;color:#1a1a2e;border-radius:10px;padding:8px 11px;font-size:10px;font-family:'Sora',sans-serif;line-height:1.5;border-bottom-left-radius:3px;">Perfeito! Tenho várias opções que podem te interessar. Qual é o seu maior desafio hoje?</div>
           </div>
-
-          <!-- Prompt gerado -->
-          <div class="julia-prompt-card">
-            <div class="julia-prompt-hdr">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <div class="julia-prompt-title">Prompt gerado automaticamente</div>
-            </div>
-            <div class="julia-prompt-sub">Com base nas configurações acima, a Julia utilizará um prompt otimizado para oferecer os melhores resultados.</div>
-            <button class="julia-prompt-btn" onclick="verPrompt()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Ver prompt completo</button>
-            <div class="julia-prompt-date"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Última atualização: agora</div>
+          <div style="display:flex;align-items:center;gap:6px;background:#f9f9ff;border:1px solid rgba(13,26,110,.1);border-radius:16px;padding:6px 12px;">
+            <span style="font-size:10px;color:rgba(13,26,110,.25);flex:1;font-family:'Sora',sans-serif;">Digite sua mensagem...</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.3)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </div>
-
         </div>
+
+        <!-- Prompt ativo no Supabase -->
+        <div style="background:#fff;border-radius:14px;border:1px solid rgba(170,0,255,.2);padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aa00ff" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div style="font-size:12px;font-weight:700;color:#aa00ff;font-family:'Sora',sans-serif;">Prompt ativo no Supabase</div>
+          </div>
+          <div style="font-size:10px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;margin-bottom:12px;line-height:1.5;">O n8n busca este prompt automaticamente antes de cada resposta da Julia.</div>
+          <button onclick="verPrompt()" style="width:100%;padding:7px;border-radius:7px;border:1px solid rgba(170,0,255,.25);background:#faf5ff;color:#aa00ff;font-size:10px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver prompt completo
+          </button>
+          <div style="font-size:9px;color:rgba(13,26,110,.3);font-family:'Sora',sans-serif;margin-top:7px;display:flex;align-items:center;gap:4px;">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(13,26,110,.3)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="jeDataSalvo">Nunca salvo</span>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
+
 
   <!-- ═══ INÍCIO SCREEN ═══ -->
   <div class="inicio-screen" id="inicioScreen">
@@ -3323,118 +3289,232 @@ const objInfo={
   venda:{nome:'Fechar venda',desc:'Conduzir até o fechamento'},
   duvidas:{nome:'Tirar dúvidas',desc:'Esclarecer dúvidas e informar'}
 };
-function renderJulia(){
-  atualizarResumoJulia();
-}
-function selectStyle(el,style){
-  document.querySelectorAll('.julia-style-card').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  juliaConfig.style=style;
-  atualizarResumoJulia();
-}
-function selectObj(el,obj){
-  document.querySelectorAll('.julia-obj-card').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  juliaConfig.obj=obj;
-  atualizarResumoJulia();
-}
-function toggleCheck(el){
-  const box=el.querySelector('.julia-check-box');
-  box.classList.toggle('checked');
-}
-function updateJuliaChar(el){
-  const max=2000;const len=el.value.length;
-  const cc=document.getElementById('juliaCharCount');
-  if(cc)cc.textContent=Math.min(len,max)+'/'+max+' caracteres';
-  if(len>max)el.value=el.value.slice(0,max);
-}
-function atualizarResumoJulia(){
-  const g=id=>document.getElementById(id);
-  const st=estiloInfo[juliaConfig.style]||estiloInfo.formal;
-  const ob=objInfo[juliaConfig.obj]||objInfo.leads;
-  const nome=g('juliaName')?.value||'Julia';
-  juliaConfig.nome=nome;
-  if(g('resumoEstilo'))g('resumoEstilo').textContent=st.nome;
-  if(g('resumoEstiloDesc'))g('resumoEstiloDesc').textContent=st.desc;
-  if(g('resumoObj'))g('resumoObj').textContent=ob.nome;
-  if(g('resumoObjDesc'))g('resumoObjDesc').textContent=ob.desc;
-  if(g('resumoTom'))g('resumoTom').textContent=st.tom;
-  if(g('resumoProdutos'))g('resumoProdutos').textContent=(dbItems?.length||0)+' produtos cadastrados';
-  if(g('juliaNomePreview'))g('juliaNomePreview').textContent=nome;
-  if(g('juliaAvatarPreview'))g('juliaAvatarPreview').textContent=nome[0]?.toUpperCase()||'J';
-  // Atualizar mensagem do preview conforme estilo
-  const msgs={
-    formal:'Olá! Sou a '+nome+'. Como posso ajudá-lo(a)?',
-    consultiva:'Olá! Sou a '+nome+', como posso ajudar você hoje? 😊',
-    amigavel:'Oi! Sou a '+nome+', que ótimo ter você aqui! Como posso te ajudar? 🌟',
-    premium:'Olá, bem-vindo(a)! Sou a '+nome+'. Estou à sua disposição.'
-  };
-  if(g('juliaMsg1'))g('juliaMsg1').textContent=msgs[juliaConfig.style]||msgs.formal;
-}
-async function salvarJulia(){
-  atualizarResumoJulia();
-  const nome=juliaConfig.nome||'Julia';
-  const st=estiloInfo[juliaConfig.style]||estiloInfo.formal;
-  const ob=objInfo[juliaConfig.obj]||objInfo.leads;
-  const instrucoes=document.getElementById('juliaPrompt')?.value||'';
-  const podeFazer=Array.from(document.querySelectorAll('.jc-check input:checked')).map(el=>el.dataset.key||el.value||'');
-  const naoPodeFazer=Array.from(document.querySelectorAll('.jc-no-check input:checked')).map(el=>el.dataset.key||el.value||'');
+// ═══ INTELIGÊNCIA JULIA — EDITOR SIMPLES ═══
+const SUPABASE_URL_JE='https://acohtqxersbhgbrlzqii.supabase.co';
+const SUPABASE_KEY_JE='sb_publishable_zgWKIwXALOWRbac_13-DWg_ruoyaNkg';
 
-  const prompt=`Você é ${nome}, uma assistente virtual especializada em atendimento ao cliente.\n\nEstilo: ${st.nome} — ${st.desc}\nObjetivo principal: ${ob.nome} — ${ob.desc}\n\nRegras:\n- Nunca invente informações ou dados\n- Use apenas as informações do Database para responder\n- Não prometa descontos ou condições não autorizadas\n- Encaminhe para atendente humano quando necessário\n\n${instrucoes?'Instruções personalizadas:\n'+instrucoes:''}`;
-
-  const payload={
-    tenant_id:'default',
-    nome_atendente:nome,
-    estilo:juliaConfig.style||'formal',
-    objetivo:juliaConfig.obj||'leads',
-    instrucoes:instrucoes,
-    pode_fazer:podeFazer,
-    nao_pode_fazer:naoPodeFazer,
-    tom_voz:st.nome,
-    prompt_completo:prompt,
-    updated_at:new Date().toISOString()
-  };
-
+// Carregar prompt do Supabase ao abrir a aba
+async function renderJulia(){
+  const ta=document.getElementById('jePromptTextarea');
+  if(!ta)return;
   try{
-    // Tenta atualizar primeiro, se não existir insere
-    const check=await fetch(`${SUPABASE_URL}/rest/v1/julia_config?tenant_id=eq.default`,{
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    const r=await fetch(`${SUPABASE_URL_JE}/rest/v1/julia_config?tenant_id=eq.default&select=prompt_completo,updated_at&limit=1`,{
+      headers:{'apikey':SUPABASE_KEY_JE,'Authorization':'Bearer '+SUPABASE_KEY_JE}
     });
-    const existing=await check.json();
-
-    let res;
-    if(existing&&existing.length>0){
-      res=await fetch(`${SUPABASE_URL}/rest/v1/julia_config?tenant_id=eq.default`,{
-        method:'PATCH',
-        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify(payload)
-      });
-    } else {
-      res=await fetch(`${SUPABASE_URL}/rest/v1/julia_config`,{
-        method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify(payload)
-      });
+    const data=await r.json();
+    if(data&&data[0]&&data[0].prompt_completo){
+      ta.value=data[0].prompt_completo;
+      jeOnInput(ta);
+      if(data[0].updated_at){
+        const d=new Date(data[0].updated_at);
+        const fmt=d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+        if(document.getElementById('jeUltimaAtt')) document.getElementById('jeUltimaAtt').textContent='Salvo em '+fmt;
+        if(document.getElementById('jeDataSalvo')) document.getElementById('jeDataSalvo').textContent='Salvo em '+fmt;
+      }
+      if(document.getElementById('jeStatusTxt')) document.getElementById('jeStatusTxt').textContent='Prompt carregado do Supabase ✓';
     }
+  }catch(e){console.error('renderJulia',e);}
+}
 
-    if(res.ok||res.status===204){
-      alert('✅ Configurações da Julia salvas no Supabase! O n8n já pode buscar o prompt atualizado.');
-    } else {
-      const err=await res.text();
-      alert('⚠️ Erro ao salvar: '+err);
-    }
-  } catch(e){
-    alert('⚠️ Erro de conexão: '+e.message);
+// Input no textarea: atualiza contagem, linhas e resumo
+function jeOnInput(el){
+  const val=el.value;
+  const len=val.length;
+  const max=5000;
+  if(len>max){el.value=val.slice(0,max);}
+  if(document.getElementById('jeCharBadge')) document.getElementById('jeCharBadge').textContent=Math.min(len,max)+' / '+max;
+  if(document.getElementById('jeResumoTamanho')) document.getElementById('jeResumoTamanho').textContent=Math.min(len,max)+' caracteres';
+  jeUpdateLines(el);
+  jeAtualizarResumo(val);
+}
+
+function jeUpdateLines(el){
+  const lines=el.value.split('\n').length;
+  const container=document.getElementById('jeLineNumbers');
+  if(!container)return;
+  container.innerHTML='';
+  for(let i=1;i<=Math.max(lines,1);i++){
+    const d=document.createElement('div');
+    d.style.cssText='font-size:11px;color:rgba(13,26,110,.2);text-align:right;padding-right:8px;line-height:1.6;font-family:monospace;min-height:17.6px;';
+    d.textContent=i;
+    container.appendChild(d);
   }
 }
-function verPrompt(){
-  const nome=juliaConfig.nome||'Julia';
-  const st=estiloInfo[juliaConfig.style]||estiloInfo.formal;
-  const ob=objInfo[juliaConfig.obj]||objInfo.leads;
-  const instrucoes=document.getElementById('juliaPrompt')?.value||'';
-  const prompt=`Você é ${nome}, uma assistente virtual especializada em atendimento ao cliente.\n\nEstilo: ${st.nome} — ${st.desc}\nObjetivo principal: ${ob.nome} — ${ob.desc}\n\nRegras:\n- Nunca invente informações ou dados\n- Use apenas as informações do Database para responder\n- Não prometa descontos ou condições não autorizadas\n- Encaminhe para atendente humano quando necessário\n\n${instrucoes?'Instruções personalizadas:\n'+instrucoes:''}`;
-  alert(prompt);
+
+function jeSync(el){
+  const c=document.getElementById('jeLineNumbers');
+  if(c) c.scrollTop=el.scrollTop;
 }
+
+function jeAtualizarResumo(txt){
+  const lower=(txt||'').toLowerCase();
+  // Detectar estilo
+  let estilo='Premium',estiloDesc='Sofisticada e exclusiva';
+  if(lower.includes('formal')){estilo='Formal';estiloDesc='Profissional e objetiva';}
+  else if(lower.includes('amig')){estilo='Amigável';estiloDesc='Próxima e acolhedora';}
+  else if(lower.includes('consul')){estilo='Consultivo';estiloDesc='Foca em entender e orientar';}
+  // Detectar objetivo
+  let obj='Atendimento',objDesc='Responder dúvidas dos clientes';
+  if(lower.includes('fech')&&lower.includes('vend')){obj='Fechar venda';objDesc='Conduzir até o fechamento';}
+  else if(lower.includes('agenda')||lower.includes('visita')){obj='Agendar visita';objDesc='Marcar visitas ou reuniões';}
+  else if(lower.includes('qualif')||lower.includes('lead')){obj='Captar leads';objDesc='Gerar e qualificar contatos';}
+  if(document.getElementById('jeResumoEstilo')) document.getElementById('jeResumoEstilo').textContent=estilo;
+  if(document.getElementById('jeResumoEstiloDesc')) document.getElementById('jeResumoEstiloDesc').textContent=estiloDesc;
+  if(document.getElementById('jeResumoObj')) document.getElementById('jeResumoObj').textContent=obj;
+  if(document.getElementById('jeResumoObjDesc')) document.getElementById('jeResumoObjDesc').textContent=objDesc;
+  // Preview: detectar nome da atendente
+  const nomeMatch=txt.match(/[Ss]ou (?:a |o )?([A-ZÀ-Ú][a-zà-ú]+)/);
+  const nome=nomeMatch?nomeMatch[1]:'Julia';
+  if(document.getElementById('jeChatAv')) document.getElementById('jeChatAv').textContent=nome[0];
+  if(document.getElementById('jeChatNome')) document.getElementById('jeChatNome').textContent=nome;
+  if(txt.length>30&&document.getElementById('jeChatMsg1')) document.getElementById('jeChatMsg1').textContent='Olá! Sou a '+nome+'. Como posso ajudar você hoje? 😊';
+}
+
+// Abas do editor
+function jeSetTab(tab,el){
+  ['jeTabPrompt','jeTabVars','jeTabTest'].forEach(id=>{
+    const t=document.getElementById(id);
+    if(t){t.style.background='none';t.style.color='rgba(13,26,110,.4)';t.style.border='1px solid transparent';}
+  });
+  if(el){el.style.background='rgba(170,0,255,.1)';el.style.color='#aa00ff';el.style.border='1px solid rgba(170,0,255,.25)';}
+  document.getElementById('jePanelPrompt').style.display=tab==='prompt'?'flex':'none';
+  document.getElementById('jePanelVars').style.display=tab==='vars'?'block':'none';
+  document.getElementById('jePanelTest').style.display=tab==='test'?'block':'none';
+}
+
+function jeLimpar(){
+  if(confirm('Limpar o prompt? Esta ação não pode ser desfeita.')){
+    const ta=document.getElementById('jePromptTextarea');
+    if(ta){ta.value='';jeOnInput(ta);}
+  }
+}
+
+function jeCarregarExemplo(){
+  const ex=`Você é Julia, uma assistente virtual especializada em atendimento ao cliente.
+
+Estilo: Premium — Sofisticada e exclusiva
+Objetivo principal: Fechar venda — Conduzir até o fechamento
+
+Regras:
+- Nunca invente informações ou dados
+- Use apenas as informações do Database para responder
+- Não prometa descontos ou condições não autorizadas
+- Encaminhe para atendente humano quando necessário
+
+Instruções personalizadas:
+Você é Julia, consultora comercial da Blee Social. Atende pelo WhatsApp.
+
+QUEM VOCÊ É:
+Vendedora de alto nível. Humana, natural, direta. Pensa como gente, fala como gente.
+Nunca robótica. Nunca pressiona. Sem listas, sem asteriscos, sem formatação de texto.
+Máximo 3 linhas por mensagem. Sempre.
+
+PERSONALIDADE:
+- Usa o nome do cliente quando possível
+- Interesse genuíno no problema antes de vender
+- Gatilhos mentais com elegância, nunca na pressão
+- Nunca vai direto ao preço — gera valor primeiro
+- Mas não enrola: identifica a dor e age rápido
+- Faz UMA pergunta por vez, nunca duas seguidas
+
+REGRA DE OURO — PREÇO:
+Nunca responda o valor direto. Primeiro mostre o que o cliente vai receber e resultados reais. Só então o preço aparece como consequência natural.`;
+  const ta=document.getElementById('jePromptTextarea');
+  if(ta){ta.value=ex;jeOnInput(ta);}
+  jeShowToast('Exemplo carregado! Personalize conforme seu negócio.');
+}
+
+function jeCopiar(){
+  const ta=document.getElementById('jePromptTextarea');
+  if(!ta||!ta.value){jeShowToast('Nada para copiar!');return;}
+  navigator.clipboard.writeText(ta.value).then(()=>jeShowToast('Prompt copiado!'));
+}
+
+function jeInserirVar(v){
+  const ta=document.getElementById('jePromptTextarea');
+  if(!ta)return;
+  const pos=ta.selectionStart;
+  ta.value=ta.value.slice(0,pos)+v+ta.value.slice(pos);
+  ta.setSelectionRange(pos+v.length,pos+v.length);
+  ta.focus();
+  jeOnInput(ta);
+}
+
+async function jeTestar(){
+  const msg=(document.getElementById('jeTestInput')?.value||'').trim();
+  const prompt=(document.getElementById('jePromptTextarea')?.value||'').trim();
+  const res=document.getElementById('jeTestResult');
+  if(!msg||!prompt){alert('Preencha o prompt e a mensagem de teste.');return;}
+  if(res){res.style.display='block';res.innerHTML='<span style="color:#aa00ff;">Julia digitando...</span>';}
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':'','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:prompt,messages:[{role:'user',content:msg}]})
+    });
+    const data=await r.json();
+    const resp=data.content?.[0]?.text||'(sem resposta)';
+    if(res) res.innerHTML=`<div style="background:#f0f2ff;padding:10px;border-radius:8px;font-size:11px;color:#1a1a2e;line-height:1.6;"><strong style="color:#aa00ff;">Julia:</strong> ${resp}</div>`;
+  }catch(e){
+    if(res) res.innerHTML='<span style="color:#ef4444;">Configure a API key para testar.</span>';
+  }
+}
+
+async function salvarJulia(){
+  const ta=document.getElementById('jePromptTextarea');
+  const prompt=(ta?.value||'').trim();
+  if(!prompt){jeShowToast('⚠️ Escreva um prompt antes de salvar!');return;}
+  const saveTxt=document.getElementById('juliaSaveTxt');
+  const saveSpin=document.getElementById('juliaSaveSpin');
+  if(saveTxt) saveTxt.style.display='none';
+  if(saveSpin) saveSpin.style.display='inline-block';
+  const payload={tenant_id:'default',prompt_completo:prompt,updated_at:new Date().toISOString()};
+  try{
+    const r=await fetch(`${SUPABASE_URL_JE}/rest/v1/julia_config`,{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY_JE,'Authorization':'Bearer '+SUPABASE_KEY_JE,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(payload)
+    });
+    if(r.ok||r.status===204||r.status===201){
+      const now=new Date();
+      const fmt=now.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      if(document.getElementById('jeUltimaAtt')) document.getElementById('jeUltimaAtt').textContent='Salvo em '+fmt;
+      if(document.getElementById('jeDataSalvo')) document.getElementById('jeDataSalvo').textContent='Salvo em '+fmt;
+      if(document.getElementById('jeStatusTxt')) document.getElementById('jeStatusTxt').textContent='Prompt salvo no Supabase ✓';
+      jeShowToast('✅ Prompt salvo! Julia já usa a nova versão.');
+    }else{
+      const err=await r.text();
+      jeShowToast('⚠️ Erro: '+err.slice(0,60));
+    }
+  }catch(e){jeShowToast('⚠️ Erro de conexão. Tente novamente.');}
+  if(saveTxt) saveTxt.style.display='inline';
+  if(saveSpin) saveSpin.style.display='none';
+}
+
+function verPrompt(){
+  const ta=document.getElementById('jePromptTextarea');
+  alert(ta?.value||'Nenhum prompt configurado ainda.');
+}
+
+function jeShowToast(msg){
+  let t=document.getElementById('jeToast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='jeToast';
+    t.style.cssText='position:fixed;bottom:24px;right:24px;background:#0d1a6e;color:#fff;padding:12px 18px;border-radius:10px;font-size:12px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s ease;font-family:Sora,sans-serif;display:flex;align-items:center;gap:8px;';
+    document.body.appendChild(t);
+  }
+  t.innerHTML='<div style="width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;"></div><span>'+msg+'</span>';
+  t.style.transform='translateY(0)';t.style.opacity='1';
+  setTimeout(()=>{t.style.transform='translateY(100px)';t.style.opacity='0';},3000);
+}
+
+// Manter funções antigas como stubs para não quebrar nada
+function selectStyle(){}
+function selectObj(){}
+function toggleCheck(el){const b=el.querySelector('.julia-check-box');if(b)b.classList.toggle('checked');}
+function updateJuliaChar(){}
+function atualizarResumoJulia(){}
 
 function renderInicio(){
   // Data atual
