@@ -2835,7 +2835,13 @@ async function loadContacts(){
   }
   const map={};
   data.forEach(r=>{
-    if(!map[r.telefone])map[r.telefone]={phone:r.telefone,nome:r.nome,lastMsg:r.mensagem,lastTime:r.criado_em};
+    if(!map[r.telefone]){
+      map[r.telefone]={phone:r.telefone,nome:null,lastMsg:r.mensagem,lastTime:r.criado_em};
+    }
+    // Pega o nome do cliente (papel='cliente'), não da Julia
+    if((r.papel==='cliente'||r.papel==='user')&&r.nome&&r.nome!=='Julia IA'&&!map[r.telefone].nome){
+      map[r.telefone].nome=r.nome;
+    }
   });
   contacts=Object.values(map).sort((a,b)=>new Date(b.lastTime)-new Date(a.lastTime));
   renderContacts(contacts);
@@ -2992,7 +2998,7 @@ function renderMessages(msgs,nome){
     const same=m.papel===lastPapel;
     const avClass=isJulia?'julia-av':'client';
     const avTxt=isJulia?'JI':(nome||'C').charAt(0);
-    const senderLbl=!same?(isJulia?'Julia IA':(nome||'Cliente')):'';
+    const senderLbl=!same?(isJulia?'Julia':(nome&&nome!=='Julia IA'?nome:'Cliente')):'';
     html+=`<div class="msg-row ${side}">
       <div class="msg-av-sm ${avClass} ${same?'invisible':''} ">${avTxt}</div>
       <div class="msg-content">
