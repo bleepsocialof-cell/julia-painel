@@ -2984,17 +2984,22 @@ function getStatusBarHTML(){
 
 function renderMessages(msgs,nome){
   const area=document.getElementById('messagesArea');
+  if(!area)return; // elemento ainda não está na tela (ex: voltou de outra aba) — evita quebrar
   if(!Array.isArray(msgs)||!msgs.length){
     area.innerHTML='<div class="load-msg">Nenhuma mensagem encontrada.</div>';
     return;
   }
   let html='',lastDate='',lastPapel='';
   msgs.forEach(m=>{
-    // Converter UTC para America/Recife (UTC-3)
-    const dUTC=new Date(m.criado_em);
-    const dRec=new Date(dUTC.toLocaleString('en-US',{timeZone:'America/Recife'}));
+    // O banco salva criado_em JÁ em horário de Recife, sem marcador de fuso.
+    // Removemos qualquer Z ou offset e lemos o horário exatamente como está.
+    const raw=String(m.criado_em||'').replace('T',' ').replace(/\.\d+/,'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'').trim();
+    const [datePart,timePart='00:00:00']=raw.split(' ');
+    const [Y,Mo,D]=datePart.split('-').map(Number);
+    const [h,mi]=timePart.split(':').map(Number);
+    const dRec=new Date(Y,(Mo||1)-1,D||1,h||0,mi||0);
     const dateStr=dRec.toLocaleDateString('pt-BR');
-    const timeStr=dRec.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const timeStr=String(h||0).padStart(2,'0')+':'+String(mi||0).padStart(2,'0');
     const isJulia=m.papel==='julia'||m.papel==='assistente';
     const side=isJulia?'julia':'';
     if(dateStr!==lastDate){html+=`<div class="date-sep">${dateStr}</div>`;lastDate=dateStr;lastPapel='';}
@@ -3593,7 +3598,7 @@ async function renderLeads(){
   if(!list)return;
   list.innerHTML='<div class="db-empty">Carregando leads...</div>';
   try{
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/conversas?select=*&order=created_at.desc`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/conversas?select=*&order=criado_em.desc`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
     const data=await res.json();
     leadsData=(Array.isArray(data)?data:[]).map((r,i)=>({
       id:r.id||i,
@@ -3604,7 +3609,7 @@ async function renderLeads(){
       status:r.status||'pendente',
       score:r.score||0,
       crm:r.enviado_crm||false,
-      tempo:r.ultima_msg||r.created_at||'',
+      tempo:r.ultima_msg||r.criado_em||'',
       resumo:r.resumo||'',
       tags:(r.tags||r.interesse||'').split(',').filter(Boolean)
     }));
@@ -3831,9 +3836,15 @@ function formatPhone(p){
 }
 function relTime(iso){
   if(!iso)return'';
-  // Forçar parse correto do timestamp UTC
-  const isoFixed=iso.endsWith('Z')||iso.includes('+')? iso : iso+'Z';
-  const diff=Date.now()-new Date(isoFixed).getTime();
+  // O banco salva em horário de Recife sem fuso. Lemos como está e comparamos
+  // com o "agora" também em Recife, sem reinterpretar como UTC.
+  const raw=String(iso).replace('T',' ').replace(/\.\d+/,'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'').trim();
+  const [dp,tp='00:00:00']=raw.split(' ');
+  const [Y,Mo,D]=dp.split('-').map(Number);
+  const [hh,mm,ss]=tp.split(':').map(Number);
+  const t=new Date(Y,(Mo||1)-1,D||1,hh||0,mm||0,ss||0).getTime();
+  const nowRec=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Recife'})).getTime();
+  const diff=nowRec-t;
   const m=Math.floor(diff/60000);
   const h=Math.floor(diff/3600000);
   if(m<2)return'agora';
@@ -3843,7 +3854,9 @@ function relTime(iso){
 }
 function fmtHora(iso){
   if(!iso)return'';
-  return new Date(iso).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Recife'});
+  const raw=String(iso).replace('T',' ').replace(/\.\d+/,'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'').trim();
+  const tp=(raw.split(' ')[1]||'00:00:00').split(':');
+  return String(tp[0]||'00').padStart(2,'0')+':'+String(tp[1]||'00').padStart(2,'0');
 }
 // ═══ INTEGRAÇÕES ═══
 const integConfig={wa:{},meta:{},hubspot:{},rd:{},pipedrive:{},generic:{}};
