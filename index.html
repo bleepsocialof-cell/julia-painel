@@ -1328,7 +1328,7 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
       <div class="topbar-row2">
         <div class="topbar-date-wrap" style="position:relative;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span class="topbar-date-txt" id="topbarDateTxt">05/06/2026</span>
+          <span class="topbar-date-txt" id="topbarDateTxt">—</span>
           <div class="topbar-period" id="topbarPeriodBtn" onclick="togglePeriodMenu()">
             <span id="periodLabel">Hoje</span>
             <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2737,7 +2737,16 @@ function navClick(aba){
   // Esconder mainArea nas outras telas
   if(mainArea)mainArea.style.display='none';
 
-  if(isConv){return;}
+  if(isConv){
+    // Resetar mainBody para o estado correto ao voltar para conversas
+    if(mainBody){
+      mainBody.style.display='flex';
+      // Remover qualquer conteúdo "em breve" que possa ter ficado
+      const emBreve=mainBody.querySelector('div[style*="flex-direction:column;align-items:center"]');
+      if(emBreve) emBreve.remove();
+    }
+    return;
+  }
 
   // Telas "em breve"
   if(mainBody){
@@ -2885,8 +2894,15 @@ async function selectContact(phone){
   const c=contacts.find(x=>x.phone===phone);
   if(!c)return;
 
-  // Garantir que aba conversas está ativa
+  // Garantir que aba conversas está ativa e mainBody visível
   navClick('conversas');
+  const mb=document.getElementById('mainBody');
+  if(mb){
+    mb.style.display='flex';
+    // Limpar qualquer tela "em breve" que possa ter ficado
+    const lixo=mb.querySelector('div[style*="align-items:center;justify-content:center"]');
+    if(lixo) lixo.remove();
+  }
 
   const ini=(c.nome||c.phone).charAt(0).toUpperCase();
   const g=id=>document.getElementById(id);
@@ -2965,9 +2981,11 @@ function renderMessages(msgs,nome){
   }
   let html='',lastDate='',lastPapel='';
   msgs.forEach(m=>{
-    const d=new Date(m.criado_em);
-    const dateStr=d.toLocaleDateString('pt-BR',{timeZone:'America/Recife'});
-    const timeStr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Recife'});
+    // Converter UTC para America/Recife (UTC-3)
+    const dUTC=new Date(m.criado_em);
+    const dRec=new Date(dUTC.toLocaleString('en-US',{timeZone:'America/Recife'}));
+    const dateStr=dRec.toLocaleDateString('pt-BR');
+    const timeStr=dRec.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const isJulia=m.papel==='julia'||m.papel==='assistente';
     const side=isJulia?'julia':'';
     if(dateStr!==lastDate){html+=`<div class="date-sep">${dateStr}</div>`;lastDate=dateStr;lastPapel='';}
@@ -3799,7 +3817,9 @@ function formatPhone(p){
 }
 function relTime(iso){
   if(!iso)return'';
-  const diff=Date.now()-new Date(iso).getTime();
+  // Forçar parse correto do timestamp UTC
+  const isoFixed=iso.endsWith('Z')||iso.includes('+')? iso : iso+'Z';
+  const diff=Date.now()-new Date(isoFixed).getTime();
   const m=Math.floor(diff/60000);
   const h=Math.floor(diff/3600000);
   if(m<2)return'agora';
