@@ -2603,7 +2603,10 @@ Objetivo: fechar vendas conduzindo o cliente ao pagamento."
 <script>
 const SUPABASE_URL='https://acohtqxersbhgbrlzqii.supabase.co';
 const SUPABASE_KEY='sb_publishable_zgWKIwXALOWRbac_13-DWg_ruoyaNkg';
-const ANTHROPIC_KEY='sk-ant-api03-Ts_eBaD0GXnNkCIEqpBhpA2zXb_k09G5sH0M85tygvr3A1Kke3QjSnEPjuCOi98Oo3I9W-vNVo8mSvuTBWadg-3n5ggwAA';
+// Chave de IA removida do front-end por segurança. Os recursos de IA do painel
+// (Analisar com IA / Testar) ficam temporariamente desativados até serem religados
+// via webhook do n8n, que guarda a credencial com segurança.
+const ANTHROPIC_KEY='';
 const LOGIN_EMAIL='bleepsocialof@gmail.com';
 const LOGIN_PASS='Sarah@2018';
 
@@ -2861,17 +2864,16 @@ function renderContacts(list){
     const ini=(c.nome||c.phone).charAt(0).toUpperCase();
     const color=strColor(c.phone);
     const time=relTime(c.lastTime);
-    const preview=escHtml((c.lastMsg||'').substring(0,35))+(c.lastMsg?.length>35?'…':'');
+    const preview=(c.lastMsg||'').substring(0,35)+(c.lastMsg?.length>35?'…':'');
     const active=c.phone===currentPhone?'active':'';
-    const safePhone=String(c.phone).replace(/[^0-9+]/g,'');
-    return `<div class="inbox-item ${active}" onclick="selectContact('${safePhone}')">
+    return `<div class="inbox-item ${active}" onclick="selectContact('${c.phone}')">
       <div class="inbox-av" style="background:${color}">
-        ${escHtml(ini)}
+        ${ini}
         <div class="inbox-dot dot-green"></div>
       </div>
       <div class="inbox-info">
         <div class="inbox-row">
-          <span class="inbox-name">${escHtml(c.nome||c.phone)}</span>
+          <span class="inbox-name">${c.nome||c.phone}</span>
           <span class="inbox-time">${time}</span>
         </div>
         ${c.nome?`<div class="inbox-phone">${formatPhone(c.phone)}</div>`:''}
@@ -2988,12 +2990,11 @@ function renderMessages(msgs,nome){
   }
   let html='',lastDate='',lastPapel='';
   msgs.forEach(m=>{
-    // O banco salva o horário já em America/Recife (sem marcador de fuso).
-    // Removemos qualquer 'Z' ou offset para o JS não reinterpretar como UTC.
-    const raw=String(m.criado_em||'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');
-    const d=new Date(raw);
-    const dateStr=d.toLocaleDateString('pt-BR');
-    const timeStr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    // Converter UTC para America/Recife (UTC-3)
+    const dUTC=new Date(m.criado_em);
+    const dRec=new Date(dUTC.toLocaleString('en-US',{timeZone:'America/Recife'}));
+    const dateStr=dRec.toLocaleDateString('pt-BR');
+    const timeStr=dRec.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     const isJulia=m.papel==='julia'||m.papel==='assistente';
     const side=isJulia?'julia':'';
     if(dateStr!==lastDate){html+=`<div class="date-sep">${dateStr}</div>`;lastDate=dateStr;lastPapel='';}
@@ -3111,6 +3112,7 @@ function updateScore(val,tipo){
 // ═══ ANALISAR COM IA ═══
 async function analyzeWithAI(){
   if(!currentPhone)return;
+  if(!ANTHROPIC_KEY){alert('A análise com IA está temporariamente indisponível. Será religada em breve.');return;}
   const btn=document.getElementById('rpAnalyzeBtn');
   const txt=document.getElementById('rpAnalyzeTxt');
   btn.classList.add('loading');txt.textContent='🤖 Analisando...';
@@ -3342,9 +3344,8 @@ const objInfo={
   duvidas:{nome:'Tirar dúvidas',desc:'Esclarecer dúvidas e informar'}
 };
 // ═══ INTELIGÊNCIA JULIA — EDITOR SIMPLES ═══
-// Reutiliza as constantes globais (SUPABASE_URL / SUPABASE_KEY) — evita duplicação
-const SUPABASE_URL_JE=SUPABASE_URL;
-const SUPABASE_KEY_JE=SUPABASE_KEY;
+const SUPABASE_URL_JE='https://acohtqxersbhgbrlzqii.supabase.co';
+const SUPABASE_KEY_JE='sb_publishable_zgWKIwXALOWRbac_13-DWg_ruoyaNkg';
 
 // Carregar prompt do Supabase ao abrir a aba
 async function renderJulia(){
@@ -3498,11 +3499,15 @@ async function jeTestar(){
   const prompt=(document.getElementById('jePromptTextarea')?.value||'').trim();
   const res=document.getElementById('jeTestResult');
   if(!msg||!prompt){alert('Preencha o prompt e a mensagem de teste.');return;}
+  if(!ANTHROPIC_KEY){
+    if(res){res.style.display='block';res.innerHTML='<span style="color:#aa00ff;">O teste com IA está temporariamente indisponível. Será religado em breve.</span>';}
+    return;
+  }
   if(res){res.style.display='block';res.innerHTML='<span style="color:#aa00ff;">Julia digitando...</span>';}
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':'','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:prompt,messages:[{role:'user',content:msg}]})
     });
     const data=await r.json();
@@ -3826,11 +3831,9 @@ function formatPhone(p){
 }
 function relTime(iso){
   if(!iso)return'';
-  // O banco salva já em horário local (Recife), sem marcador de fuso.
-  // Removemos qualquer Z/offset e comparamos com o horário local atual de Recife.
-  const raw=String(iso).replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');
-  const nowRec=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Recife'}));
-  const diff=nowRec.getTime()-new Date(raw).getTime();
+  // Forçar parse correto do timestamp UTC
+  const isoFixed=iso.endsWith('Z')||iso.includes('+')? iso : iso+'Z';
+  const diff=Date.now()-new Date(isoFixed).getTime();
   const m=Math.floor(diff/60000);
   const h=Math.floor(diff/3600000);
   if(m<2)return'agora';
@@ -3840,8 +3843,7 @@ function relTime(iso){
 }
 function fmtHora(iso){
   if(!iso)return'';
-  const raw=String(iso).replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');
-  return new Date(raw).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  return new Date(iso).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Recife'});
 }
 // ═══ INTEGRAÇÕES ═══
 const integConfig={wa:{},meta:{},hubspot:{},rd:{},pipedrive:{},generic:{}};
