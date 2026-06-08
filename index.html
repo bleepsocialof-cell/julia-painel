@@ -2702,6 +2702,10 @@ function navClick(aba){
   // Mover conteúdo das telas para o mainArea
   const mainArea=document.getElementById('mainArea');
 
+  // Esconder overlay "em breve" por padrão (só reaparece na branch específica)
+  const _csPrev=document.getElementById('comingSoonOverlay');
+  if(_csPrev)_csPrev.style.display='none';
+
   // Esconder todas as telas específicas
   ['dbScreen','leadsScreen','inicioScreen','juliaScreen','integracoesScreen'].forEach(id=>{
     const el=document.getElementById(id);
@@ -2751,16 +2755,22 @@ function navClick(aba){
     return;
   }
 
-  // Telas "em breve"
-  if(mainBody){
-    mainBody.style.display='flex';
-    mainBody.innerHTML=`
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f0f2ff;gap:10px;">
-        <div style="font-size:44px;">${NAV_LABELS[aba]?.split(' ')[0]||'📄'}</div>
-        <div style="font-size:15px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">${NAV_LABELS[aba]?.replace(/^. /,'')||aba}</div>
-        <div style="font-size:11px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;">${NAV_SUBS[aba]||'Esta seção está sendo desenvolvida'}</div>
-      </div>`;
+  // Telas "em breve" — usar overlay dedicado, SEM destruir o mainBody
+  // (o mainBody contém a área de mensagens; apagá-lo deixava a conversa em branco)
+  if(mainBody)mainBody.style.display='none';
+  let cs=document.getElementById('comingSoonOverlay');
+  if(!cs){
+    cs=document.createElement('div');
+    cs.id='comingSoonOverlay';
+    cs.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f0f2ff;gap:10px;width:100%;min-width:0;';
+    const parent=mainBody?mainBody.parentElement:(mainCol||null);
+    if(parent)parent.appendChild(cs);
   }
+  cs.style.display='flex';
+  cs.innerHTML=`
+    <div style="font-size:44px;">${NAV_LABELS[aba]?.split(' ')[0]||'📄'}</div>
+    <div style="font-size:15px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;">${NAV_LABELS[aba]?.replace(/^. /,'')||aba}</div>
+    <div style="font-size:11px;color:rgba(13,26,110,.4);font-family:'Sora',sans-serif;">${NAV_SUBS[aba]||'Esta seção está sendo desenvolvida'}</div>`;
 }
 
 // ═══ SUPABASE ═══
