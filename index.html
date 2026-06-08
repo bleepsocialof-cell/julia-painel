@@ -2861,16 +2861,17 @@ function renderContacts(list){
     const ini=(c.nome||c.phone).charAt(0).toUpperCase();
     const color=strColor(c.phone);
     const time=relTime(c.lastTime);
-    const preview=(c.lastMsg||'').substring(0,35)+(c.lastMsg?.length>35?'…':'');
+    const preview=escHtml((c.lastMsg||'').substring(0,35))+(c.lastMsg?.length>35?'…':'');
     const active=c.phone===currentPhone?'active':'';
-    return `<div class="inbox-item ${active}" onclick="selectContact('${c.phone}')">
+    const safePhone=String(c.phone).replace(/[^0-9+]/g,'');
+    return `<div class="inbox-item ${active}" onclick="selectContact('${safePhone}')">
       <div class="inbox-av" style="background:${color}">
-        ${ini}
+        ${escHtml(ini)}
         <div class="inbox-dot dot-green"></div>
       </div>
       <div class="inbox-info">
         <div class="inbox-row">
-          <span class="inbox-name">${c.nome||c.phone}</span>
+          <span class="inbox-name">${escHtml(c.nome||c.phone)}</span>
           <span class="inbox-time">${time}</span>
         </div>
         ${c.nome?`<div class="inbox-phone">${formatPhone(c.phone)}</div>`:''}
@@ -3340,8 +3341,9 @@ const objInfo={
   duvidas:{nome:'Tirar dúvidas',desc:'Esclarecer dúvidas e informar'}
 };
 // ═══ INTELIGÊNCIA JULIA — EDITOR SIMPLES ═══
-const SUPABASE_URL_JE='https://acohtqxersbhgbrlzqii.supabase.co';
-const SUPABASE_KEY_JE='sb_publishable_zgWKIwXALOWRbac_13-DWg_ruoyaNkg';
+// Reutiliza as constantes globais (SUPABASE_URL / SUPABASE_KEY) — evita duplicação
+const SUPABASE_URL_JE=SUPABASE_URL;
+const SUPABASE_KEY_JE=SUPABASE_KEY;
 
 // Carregar prompt do Supabase ao abrir a aba
 async function renderJulia(){
