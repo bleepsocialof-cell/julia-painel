@@ -3371,9 +3371,61 @@ function atualizarResumoJulia(){
   };
   if(g('juliaMsg1'))g('juliaMsg1').textContent=msgs[juliaConfig.style]||msgs.formal;
 }
-function salvarJulia(){
+async function salvarJulia(){
   atualizarResumoJulia();
-  alert('Configurações da Julia salvas com sucesso!');
+  const nome=juliaConfig.nome||'Julia';
+  const st=estiloInfo[juliaConfig.style]||estiloInfo.formal;
+  const ob=objInfo[juliaConfig.obj]||objInfo.leads;
+  const instrucoes=document.getElementById('juliaPrompt')?.value||'';
+  const podeFazer=Array.from(document.querySelectorAll('.jc-check input:checked')).map(el=>el.dataset.key||el.value||'');
+  const naoPodeFazer=Array.from(document.querySelectorAll('.jc-no-check input:checked')).map(el=>el.dataset.key||el.value||'');
+
+  const prompt=`Você é ${nome}, uma assistente virtual especializada em atendimento ao cliente.\n\nEstilo: ${st.nome} — ${st.desc}\nObjetivo principal: ${ob.nome} — ${ob.desc}\n\nRegras:\n- Nunca invente informações ou dados\n- Use apenas as informações do Database para responder\n- Não prometa descontos ou condições não autorizadas\n- Encaminhe para atendente humano quando necessário\n\n${instrucoes?'Instruções personalizadas:\n'+instrucoes:''}`;
+
+  const payload={
+    tenant_id:'default',
+    nome_atendente:nome,
+    estilo:juliaConfig.style||'formal',
+    objetivo:juliaConfig.obj||'leads',
+    instrucoes:instrucoes,
+    pode_fazer:podeFazer,
+    nao_pode_fazer:naoPodeFazer,
+    tom_voz:st.nome,
+    prompt_completo:prompt,
+    updated_at:new Date().toISOString()
+  };
+
+  try{
+    // Tenta atualizar primeiro, se não existir insere
+    const check=await fetch(`${SUPABASE_URL}/rest/v1/julia_config?tenant_id=eq.default`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    });
+    const existing=await check.json();
+
+    let res;
+    if(existing&&existing.length>0){
+      res=await fetch(`${SUPABASE_URL}/rest/v1/julia_config?tenant_id=eq.default`,{
+        method:'PATCH',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify(payload)
+      });
+    } else {
+      res=await fetch(`${SUPABASE_URL}/rest/v1/julia_config`,{
+        method:'POST',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify(payload)
+      });
+    }
+
+    if(res.ok||res.status===204){
+      alert('✅ Configurações da Julia salvas no Supabase! O n8n já pode buscar o prompt atualizado.');
+    } else {
+      const err=await res.text();
+      alert('⚠️ Erro ao salvar: '+err);
+    }
+  } catch(e){
+    alert('⚠️ Erro de conexão: '+e.message);
+  }
 }
 function verPrompt(){
   const nome=juliaConfig.nome||'Julia';
