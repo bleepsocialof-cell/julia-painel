@@ -1183,6 +1183,10 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
 .cf-switch.on::after{transform:translateX(19px);}
 .cf-save{background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;border:none;padding:11px 20px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
 .cf-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:10px 16px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.preview-banner{position:fixed;top:0;left:0;right:0;z-index:10001;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;display:none;align-items:center;justify-content:center;gap:14px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.preview-banner.show{display:flex;}
+.preview-banner button{background:rgba(255,255,255,.25);border:none;color:#fff;font-weight:700;font-size:11px;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:'Sora',sans-serif;}
+.preview-banner button:hover{background:rgba(255,255,255,.35);}
 </style>
 </head>
 <body>
@@ -1280,7 +1284,7 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <div class="tr-notif-dot"></div>
         </div>
-        <div class="tr-icon" title="Visualizar">
+        <div class="tr-icon" id="trEyeBtn" title="Ver como cliente" onclick="togglePreviewCliente()" style="cursor:pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
         <div class="tr-sep"></div>
@@ -1288,7 +1292,7 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
           <div class="tr-av" id="trAvatar">J</div>
           <div>
             <div class="tr-name" id="trUserName">Usuário</div>
-            <div class="tr-role">Administrador</div>
+            <div class="tr-role" id="trUserRole">Administrador</div>
           </div>
           <span class="tr-arrow">▾</span>
           <div class="tr-dropdown" id="trDropdown">
@@ -2965,6 +2969,12 @@ Objetivo: fechar vendas conduzindo o cliente ao pagamento."
 
 </div><!-- fim appScreen -->
 
+<!-- Banner de pré-visualização "como cliente" -->
+<div class="preview-banner" id="previewBanner">
+  <span>👁 Você está vendo o painel como um cliente veria</span>
+  <button onclick="togglePreviewCliente()">Voltar ao modo administrador</button>
+</div>
+
 <!-- ═══ MODAL EDITAR PERFIL (fora do appScreen para exibir corretamente) ═══ -->
 <div class="pf-overlay" id="pfOverlay">
   <div class="pf-modal">
@@ -3075,6 +3085,37 @@ function doLogout(){
   document.getElementById('loginScreen').style.display='flex';
 }
 function logout(){doLogout();}
+
+// ═══ SISTEMA DE PAPÉIS (admin × visualizador) ═══
+// Camada visual: esconde do cliente o que é só do admin (Clientes e Integrações).
+// A trava de verdade (servidor) virá com o Supabase Auth.
+let papelAtual='admin';
+// abas que o cliente (visualizador) NÃO vê
+const ABAS_SO_ADMIN={navEquipe:'equipe',navIntegracoes:'integracoes'};
+function aplicarPapel(){
+  const ehCliente=papelAtual==='visualizador';
+  Object.keys(ABAS_SO_ADMIN).forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display=ehCliente?'none':'';
+  });
+  // troca o rótulo do cargo
+  const role=document.getElementById('trUserRole');
+  if(role)role.textContent=ehCliente?'Cliente':'Administrador';
+  // item de menu "Editar perfil" e demais continuam; nada a esconder além das abas
+}
+function togglePreviewCliente(){
+  papelAtual=(papelAtual==='admin')?'visualizador':'admin';
+  aplicarPapel();
+  const banner=document.getElementById('previewBanner');
+  if(banner)banner.classList.toggle('show',papelAtual==='visualizador');
+  const eye=document.getElementById('trEyeBtn');
+  if(eye)eye.title=(papelAtual==='visualizador')?'Voltar ao modo administrador':'Ver como cliente';
+  // se o cliente estava numa aba que sumiu, volta para Conversas
+  if(papelAtual==='visualizador'){
+    const ativo=document.querySelector('.nav-item.active');
+    if(ativo&&(ativo.id==='navEquipe'||ativo.id==='navIntegracoes')){navClick('conversas');}
+  }
+}
 function togglePwd(){
   const i=document.getElementById('loginPassword');
   i.type=i.type==='password'?'text':'password';
