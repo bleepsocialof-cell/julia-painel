@@ -1546,10 +1546,10 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
         </div>
         <div class="input-bar" id="inputBar">
           <span class="input-icon" title="Anexar arquivo">📎</span>
-          <input type="text" id="msgInput" placeholder="Digite uma mensagem..."/>
-          <button onclick="alert('Em breve!')" style="background:transparent;border:1px solid rgba(239,68,68,.4);border-radius:20px;padding:6px 13px;font-size:11px;font-weight:500;color:#f87171;cursor:pointer;white-space:nowrap;font-family:'Sora',sans-serif;flex-shrink:0;">Descartar</button>
-          <button onclick="alert('Em breve!')" style="background:linear-gradient(135deg,#1a0060,#0d1b8e);border:none;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;font-family:'Sora',sans-serif;flex-shrink:0;box-shadow:0 2px 8px rgba(13,27,142,.4);">Qualificar <span style="color:#c12cdb;">✦</span></button>
-          <button class="input-send">
+          <input type="text" id="msgInput" placeholder="Digite uma mensagem..." onkeydown="if(event.key==='Enter')enviarMensagemPainel()"/>
+          <button onclick="descartarConversa()" style="background:transparent;border:1px solid rgba(239,68,68,.4);border-radius:20px;padding:6px 13px;font-size:11px;font-weight:500;color:#f87171;cursor:pointer;white-space:nowrap;font-family:'Sora',sans-serif;flex-shrink:0;">Descartar</button>
+          <button onclick="qualificarConversa()" style="background:linear-gradient(135deg,#1a0060,#0d1b8e);border:none;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;font-family:'Sora',sans-serif;flex-shrink:0;box-shadow:0 2px 8px rgba(13,27,142,.4);">Qualificar <span style="color:#c12cdb;">✦</span></button>
+          <button class="input-send" onclick="enviarMensagemPainel()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
@@ -1656,7 +1656,7 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
         </div>
 
         <div class="rp-foot">
-          <button class="rp-assume" onclick="alert('Em breve!')">
+          <button class="rp-assume" onclick="assumirConversa()">
             <span class="rp-assume-txt">🎧 Assumir conversa</span>
           </button>
         </div>
@@ -3693,6 +3693,58 @@ function filterContacts(){
 }
 
 // ═══ SELECIONAR CONTATO ═══
+// ═══ AÇÕES DA CONVERSA ═══
+let conversasAssumidas={};
+function _toast(msg){if(typeof jeShowToast==='function')jeShowToast(msg);else console.log(msg);}
+function qualificarConversa(){
+  if(!currentPhone){_toast('Abra uma conversa primeiro.');return;}
+  const c=contacts.find(x=>x.phone===currentPhone);
+  const nome=c?(c.nome||currentPhone):currentPhone;
+  _toast('✅ '+nome+' marcado como qualificado!');
+  // grava status no Supabase (tabela leads), sem travar caso falhe
+  fetch(`${SUPABASE_URL}/rest/v1/leads?telefone=eq.${encodeURIComponent(currentPhone)}`,{
+    method:'PATCH',
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({status:'qualificado'})
+  }).catch(()=>{});
+}
+function descartarConversa(){
+  if(!currentPhone){_toast('Abra uma conversa primeiro.');return;}
+  if(!confirm('Descartar esta conversa? Ela será marcada como não qualificada.'))return;
+  const c=contacts.find(x=>x.phone===currentPhone);
+  const nome=c?(c.nome||currentPhone):currentPhone;
+  _toast('Conversa de '+nome+' descartada.');
+  fetch(`${SUPABASE_URL}/rest/v1/leads?telefone=eq.${encodeURIComponent(currentPhone)}`,{
+    method:'PATCH',
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({status:'nao_qualificado'})
+  }).catch(()=>{});
+}
+function assumirConversa(){
+  if(!currentPhone){_toast('Abra uma conversa primeiro.');return;}
+  const assumida=!conversasAssumidas[currentPhone];
+  conversasAssumidas[currentPhone]=assumida;
+  const dot=document.getElementById('juliaStatusDot');
+  const txt=document.getElementById('juliaStatusTxt');
+  if(assumida){
+    if(txt)txt.textContent='Você assumiu esta conversa (Julia pausada aqui)';
+    if(dot)dot.style.background='#f59e0b';
+    _toast('🎧 Você assumiu a conversa. Pra responder, conecte o WhatsApp em Integrações.');
+  }else{
+    if(txt)txt.textContent='Julia está respondendo automaticamente';
+    if(dot)dot.style.background='#22c55e';
+    _toast('Julia retomou o atendimento.');
+  }
+}
+function enviarMensagemPainel(){
+  const inp=document.getElementById('msgInput');
+  const msg=(inp?.value||'').trim();
+  if(!msg)return;
+  if(!currentPhone){_toast('Abra uma conversa primeiro.');return;}
+  // Envio real depende do Token do WhatsApp Business (configurado em Integrações).
+  _toast('✋ Envio pelo painel requer o WhatsApp conectado (Integrações). Em breve!');
+}
+
 async function selectContact(phone){
   currentPhone=phone;
   const c=contacts.find(x=>x.phone===phone);
