@@ -819,7 +819,9 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
 .leads-body::-webkit-scrollbar{width:3px;}
 .leads-body::-webkit-scrollbar-thumb{background:rgba(13,26,110,.1);border-radius:3px;}
 .lt-table-wrap{width:100%;}
-.lt-cb{width:14px;height:14px;border-radius:4px;border:1.5px solid rgba(13,26,110,.2);flex-shrink:0;}
+.lt-cb{width:14px;height:14px;border-radius:4px;border:1.5px solid rgba(13,26,110,.2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.lt-cb.checked{background:#aa00ff;border-color:#aa00ff;}
+.lt-cb.checked::after{content:'✓';color:#fff;font-size:10px;font-weight:700;line-height:1;}
 .lt-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;}
 .lt-name{font-size:11px;font-weight:700;color:#1a1a2e;font-family:'Sora',sans-serif;}
 .lt-email{font-size:9px;color:rgba(13,26,110,.3);font-family:'Sora',sans-serif;margin-top:1px;}
@@ -4373,29 +4375,41 @@ async function renderLeads(){
   try{
     const res=await fetch(`${SUPABASE_URL}/rest/v1/conversas?select=*&order=criado_em.desc`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
     const data=await res.json();
-    leadsData=(Array.isArray(data)?data:[]).map((r,i)=>({
-      id:r.id||i,
-      nome:r.nome||r.name||'Lead '+r.telefone,
-      phone:r.telefone||r.phone||'—',
-      email:r.email||'—',
-      interesse:r.interesse||r.produto||'—',
-      status:r.status||'pendente',
-      score:r.score||0,
-      crm:r.enviado_crm||false,
-      tempo:r.ultima_msg||r.criado_em||'',
-      resumo:r.resumo||'',
-      tags:(r.tags||r.interesse||'').split(',').filter(Boolean)
+    const linhas=Array.isArray(data)?data:[];
+    // Agrupa por telefone: cada CLIENTE vira 1 lead (não 1 por mensagem).
+    // Ignora mensagens da própria Julia (papel julia / nome "Julia IA").
+    const porTelefone={};
+    linhas.forEach(r=>{
+      const tel=r.telefone||r.phone;
+      if(!tel)return;
+      const ehJulia=(r.papel==='julia'||r.papel==='assistant'||/julia/i.test(r.nome||''));
+      if(!porTelefone[tel]){
+        porTelefone[tel]={tel:tel,nomeCliente:null,ultimaMsgCliente:'',ultimoTempo:r.criado_em,status:r.status,score:r.score,crm:r.enviado_crm,interesse:r.interesse};
+      }
+      const g=porTelefone[tel];
+      // mantém o tempo mais recente (a lista vem em ordem desc, então o 1º é o mais novo)
+      if(!g.ultimoTempo||(r.criado_em&&r.criado_em>g.ultimoTempo))g.ultimoTempo=r.criado_em;
+      // nome e última mensagem vêm de uma linha do CLIENTE, não da Julia
+      if(!ehJulia){
+        if(!g.nomeCliente&&r.nome)g.nomeCliente=r.nome;
+        if(!g.ultimaMsgCliente&&r.mensagem)g.ultimaMsgCliente=r.mensagem;
+        if(!g.interesse&&r.interesse)g.interesse=r.interesse;
+      }
+    });
+    leadsData=Object.values(porTelefone).map((g,i)=>({
+      id:g.tel,
+      nome:g.nomeCliente||('Lead '+g.tel),
+      phone:g.tel,
+      email:'—',
+      interesse:g.interesse||'—',
+      status:g.status||'pendente',
+      score:g.score||0,
+      crm:g.crm||false,
+      tempo:g.ultimoTempo||'',
+      resumo:g.ultimaMsgCliente||'',
+      tags:[]
     }));
   }catch(e){leadsData=[];}
-
-  // Se não tiver dados reais, mostrar exemplos visuais
-  if(!leadsData.length){
-    leadsData=[
-      {id:1,nome:'Jadson Santos',phone:'+55 (81) 9798-6516',email:'jadson@email.com',interesse:'Negócio próprio',status:'pendente',score:20,crm:false,tempo:'Hoje, 19:10',resumo:'Lead interessado em tráfego pago e negócio próprio.',tags:['tráfego','negócio']},
-      {id:2,nome:'John Doe',phone:'(16) 9086-0265',email:'john@email.com',interesse:'Abandono carrinho',status:'pendente',score:45,crm:false,tempo:'Ontem, 18:30',resumo:'Lead de abandono de carrinho.',tags:['carrinho','produto']},
-      {id:3,nome:'Tassio Felipe',phone:'+55 (81) 9596-8220',email:'tassio@email.com',interesse:'Mentoria Tráfego',status:'qualificado',score:88,crm:true,tempo:'Há 1d',resumo:'Reunião confirmada às 14h pelo Google Meet.',tags:['mentoria','tráfego','reunião']},
-    ];
-  }
 
   leadsFiltered=[...leadsData];
   updateLeadsMetrics();
@@ -4436,8 +4450,8 @@ function renderLeadsList(){
   const scoreLbl=s=>s>=80?'🔥 Lead quente':s>=50?'🟡 Lead morno':'🔵 Lead frio';
   const scoreColor=s=>s>=80?'#dc2626':s>=50?'#d97706':'#2563eb';
   list.innerHTML=leadsFiltered.map(l=>`
-    <div class="lt-row" data-id="${l.id}" onclick="openLeadSide(${l.id})">
-      <div class="lt-cb"></div>
+    <div class="lt-row" data-id="${escHtml(String(l.id))}" onclick="openLeadSide('${escHtml(String(l.id))}')">
+      <div class="lt-cb" data-cb="${escHtml(String(l.id))}" onclick="event.stopPropagation();toggleLeadSel('${escHtml(String(l.id))}',this)"></div>
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="lt-av" style="background:${leadColor(l.nome)};">${leadInitials(l.nome)}</div>
         <div><div class="lt-name">${escHtml(l.nome)}</div><div class="lt-email">${escHtml(l.email)}</div></div>
@@ -4448,19 +4462,27 @@ function renderLeadsList(){
       <div class="lt-score" style="color:${scoreColor(l.score)};">${l.score}%</div>
       <div>${l.crm
         ?`<span class="lt-crm-sent"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Enviado</span>`
-        :`<button class="lt-crm-btn" onclick="event.stopPropagation();qualificarEnviar(${l.id})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar</button>`
+        :`<button class="lt-crm-btn" onclick="event.stopPropagation();qualificarEnviar('${escHtml(String(l.id))}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar</button>`
       }</div>
-      <div class="lt-time">${escHtml(l.tempo)}</div>
+      <div class="lt-time">${escHtml(fmtHora(l.tempo)||l.tempo)}</div>
       <div class="lt-acts">
-        <div class="lt-act" onclick="event.stopPropagation();openLeadSide(${l.id})" title="Ver"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="lt-act" onclick="event.stopPropagation();openLeadSide('${escHtml(String(l.id))}')" title="Ver"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
         <div class="lt-act" title="Mais"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
       </div>
     </div>`).join('');
   if(document.getElementById('leadsPagInfo'))document.getElementById('leadsPagInfo').textContent=`${leadsFiltered.length} lead${leadsFiltered.length!==1?'s':''}`;
 }
 
+let leadsSelecionados=new Set();
+function toggleLeadSel(id,el){
+  id=String(id);
+  if(leadsSelecionados.has(id)){leadsSelecionados.delete(id);el.classList.remove('checked');}
+  else{leadsSelecionados.add(id);el.classList.add('checked');}
+  const c=document.getElementById('leadsSelCount');
+  if(c)c.textContent=leadsSelecionados.size+' selecionado'+(leadsSelecionados.size!==1?'s':'');
+}
 function openLeadSide(id){
-  const l=leadsData.find(x=>x.id===id);
+  const l=leadsData.find(x=>String(x.id)===String(id));
   if(!l)return;
   // abrir painel
   const side=document.getElementById('leadsSide');
@@ -4518,7 +4540,7 @@ function qualificarEnviarSide(){
   if(currentSideLeadId!==null) qualificarEnviar(currentSideLeadId);
 }
 function qualificarEnviar(id){
-  const l=leadsData.find(x=>x.id===id);
+  const l=leadsData.find(x=>String(x.id)===String(id));
   if(!l)return;
   // status muda automaticamente para qualificado
   l.status='qualificado';
