@@ -3067,6 +3067,12 @@ let contacts=[],currentPhone=null,_period='today';
 let materiais=[];
 
 // ═══ AUTH ═══
+function entrarNoApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.cssText='display:flex;flex-direction:row;width:100vw;height:100vh;overflow:hidden;';
+  pfApplyToUI();
+  init();
+}
 function doLogin(){
   const e=document.getElementById('loginEmail').value.trim();
   const p=document.getElementById('loginPassword').value;
@@ -3076,17 +3082,28 @@ function doLogin(){
   const senhaVigente=perfil.senha||LOGIN_PASS;
   if(e===emailVigente&&p===senhaVigente){
     err.style.display='none';
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('appScreen').style.cssText='display:flex;flex-direction:row;width:100vw;height:100vh;overflow:hidden;';
-    pfApplyToUI();
-    init();
+    try{localStorage.setItem('sessao_julia',JSON.stringify({email:e,em:Date.now()}));}catch(_){}
+    entrarNoApp();
   }else{err.style.display='block';}
 }
 function doLogout(){
+  try{localStorage.removeItem('sessao_julia');}catch(_){}
   document.getElementById('appScreen').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
 }
 function logout(){doLogout();}
+// Mantém o usuário logado ao recarregar a página (F5), sem cair pro login.
+// Sessão expira após 7 dias por segurança.
+function checarSessao(){
+  try{
+    const s=JSON.parse(localStorage.getItem('sessao_julia')||'null');
+    if(s&&s.em&&(Date.now()-s.em)<7*24*60*60*1000){
+      entrarNoApp();
+      return true;
+    }
+  }catch(_){}
+  return false;
+}
 
 // ═══ SISTEMA DE PAPÉIS (admin × visualizador) ═══
 // Camada visual: esconde do cliente o que é só do admin (Clientes e Integrações).
@@ -4741,6 +4758,11 @@ function copyWebhook(id){
 }
 
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Ao carregar a página: se houver sessão válida, entra direto no painel (evita cair no login no F5).
+window.addEventListener('DOMContentLoaded',function(){
+  try{checarSessao();}catch(_){}
+});
 </script>
 </body>
 </html>
