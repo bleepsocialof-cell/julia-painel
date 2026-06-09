@@ -139,9 +139,9 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
 /* COL 2: INBOX DE CONTATOS */
 .inbox-col{
   width:var(--inbox-w);min-width:var(--inbox-w);
-  height:100%;background:#0a1258;
+  height:100%;background:#ffffff;
   padding-top:50px;
-  border-right:0.5px solid rgba(255,255,255,.07);
+  border-right:0.5px solid rgba(13,26,110,.08);
   display:flex;flex-direction:column;
   flex-shrink:0;overflow:hidden;
 }
@@ -165,23 +165,24 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
 .inbox-tab.active{color:#fff;}
 .inbox-tab.active .tab-badge{background:rgba(170,0,255,.25);color:#d08aff;}
 .inbox-tab:hover{color:rgba(255,255,255,.7);}
-.inbox-list{flex:1;overflow-y:auto;background:#0a1258;}
+.inbox-list{flex:1;overflow-y:auto;background:#ffffff;}
 .inbox-list::-webkit-scrollbar{width:3px;}
-.inbox-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px;}
-.inbox-item{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid rgba(255,255,255,.04);transition:background .15s;}
-.inbox-item:hover{background:rgba(255,255,255,.03);}
-.inbox-item.active{background:linear-gradient(90deg,rgba(170,0,255,.15),rgba(170,0,255,.05));border-left:3px solid #aa00ff;}
+.inbox-list::-webkit-scrollbar-thumb{background:rgba(13,26,110,.12);border-radius:3px;}
+.inbox-item{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid rgba(13,26,110,.06);transition:background .15s;}
+.inbox-item:hover{background:rgba(13,26,110,.03);}
+.inbox-item.active{background:rgba(170,0,255,.06);border-left:3px solid #e84393;}
 .inbox-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;position:relative;}
-.inbox-dot{position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;border:2px solid #0a1258;}
+.inbox-dot{position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;border:2px solid #ffffff;}
 .dot-green{background:#22c55e;} .dot-orange{background:#f97316;} .dot-blue{background:#60a5fa;}
 .inbox-info{flex:1;min-width:0;}
 .inbox-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
-.inbox-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;font-family:'Sora',sans-serif;}
-.inbox-item.active .inbox-name{color:#d08aff;}
-.inbox-time{font-size:10px;color:rgba(255,255,255,.25);flex-shrink:0;font-family:'Sora',sans-serif;}
-.inbox-phone{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:1px;font-family:'Sora',sans-serif;}
-.inbox-preview{font-size:11px;color:rgba(255,255,255,.3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Sora',sans-serif;}
-.inbox-empty{padding:2rem;text-align:center;color:rgba(255,255,255,.3);font-size:13px;font-family:'Sora',sans-serif;}
+.inbox-name{font-size:13px;font-weight:700;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;font-family:'Sora',sans-serif;}
+.inbox-item.active .inbox-name{color:#e84393;}
+.inbox-time{font-size:10px;color:#b0b8cc;flex-shrink:0;font-family:'Sora',sans-serif;}
+.inbox-phone{font-size:11px;color:#94a0b8;margin-bottom:1px;font-family:'Sora',sans-serif;}
+.inbox-item.active .inbox-phone{color:#0d1a6e;font-weight:600;}
+.inbox-preview{font-size:11px;color:#64708a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Sora',sans-serif;}
+.inbox-empty{padding:2rem;text-align:center;color:#94a0b8;font-size:13px;font-family:'Sora',sans-serif;}
 
 /* COL 3: MAIN (conversas + painel) */
 .main-col{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden;background:#f5f6ff;padding-top:50px;}
@@ -1075,6 +1076,113 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
 .ajuda-faq[open] summary::after{content:'−';}
 .ajuda-faq summary:hover{background:rgba(13,26,110,.02);}
 .ajuda-faq-a{padding:0 18px 16px;font-size:11.5px;color:#64708a;font-family:'Sora',sans-serif;line-height:1.6;}
+.pf-overlay{position:fixed;inset:0;background:rgba(13,26,110,.45);backdrop-filter:blur(3px);z-index:10000;display:none;align-items:center;justify-content:center;}
+.pf-overlay.show{display:flex;}
+.pf-modal{background:#fff;width:420px;max-width:92vw;max-height:90vh;overflow-y:auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:'Sora',sans-serif;}
+.pf-hdr{padding:20px 24px;background:linear-gradient(135deg,#1a0060,#0d1b8e);border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.pf-hdr-title{font-size:15px;font-weight:800;color:#fff;}
+.pf-close{cursor:pointer;color:rgba(255,255,255,.7);font-size:20px;line-height:1;background:none;border:none;}
+.pf-body{padding:24px;}
+.pf-avatar-row{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px;}
+.pf-avatar{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,#aa00ff,#7b00d4);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#fff;overflow:hidden;}
+.pf-avatar img{width:100%;height:100%;object-fit:cover;}
+.pf-avatar-btn{font-size:11px;font-weight:600;color:#aa00ff;cursor:pointer;background:rgba(170,0,255,.08);border:1px solid rgba(170,0,255,.2);padding:5px 12px;border-radius:7px;}
+.pf-label{font-size:11px;font-weight:700;color:#0d1a6e;margin:14px 0 5px;display:block;}
+.pf-input{width:100%;padding:10px 12px;border:1px solid rgba(13,26,110,.15);border-radius:9px;font-size:12.5px;font-family:'Sora',sans-serif;color:#1a1a2e;box-sizing:border-box;outline:none;}
+.pf-input:focus{border-color:#aa00ff;}
+.pf-section-title{font-size:11px;font-weight:800;color:#94a0b8;text-transform:uppercase;letter-spacing:.04em;margin:22px 0 4px;border-top:1px solid rgba(13,26,110,.08);padding-top:16px;}
+.pf-hint{font-size:10px;color:#94a0b8;margin-top:3px;}
+.pf-actions{display:flex;gap:10px;margin-top:24px;}
+.pf-btn-save{flex:1;padding:11px;border-radius:9px;background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;border:none;font-weight:700;font-size:12.5px;cursor:pointer;font-family:'Sora',sans-serif;}
+.pf-btn-cancel{padding:11px 18px;border-radius:9px;background:#f0f2ff;color:#64708a;border:none;font-weight:600;font-size:12.5px;cursor:pointer;font-family:'Sora',sans-serif;}
+.cli-screen{display:none;flex-direction:column;flex:1;}
+.cli-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 26px;background:linear-gradient(135deg,#1a0060,#0d1b8e);}
+.cli-hdr-l{display:flex;align-items:center;gap:12px;}
+.cli-hdr-ico{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;}
+.cli-hdr-title{font-size:16px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;}
+.cli-hdr-sub{font-size:11px;color:rgba(255,255,255,.6);font-family:'Sora',sans-serif;}
+.cli-add-btn{background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;border:none;padding:9px 16px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:6px;}
+.cli-body{flex:1;overflow-y:auto;padding:24px 26px;background:#f0f2ff;}
+.cli-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.cli-metric{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(13,26,110,.06);}
+.cli-metric-val{font-size:24px;font-weight:800;color:#0d1a6e;font-family:'Sora',sans-serif;}
+.cli-metric-lbl{font-size:11px;color:#64708a;font-family:'Sora',sans-serif;margin-top:2px;}
+.cli-table{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(13,26,110,.06);overflow:hidden;}
+.cli-row{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 40px;align-items:center;padding:13px 18px;border-bottom:1px solid rgba(13,26,110,.06);font-family:'Sora',sans-serif;}
+.cli-row:last-child{border-bottom:none;}
+.cli-row.head{background:rgba(13,26,110,.03);font-size:10px;font-weight:700;color:#94a0b8;text-transform:uppercase;letter-spacing:.04em;}
+.cli-comp{display:flex;align-items:center;gap:10px;}
+.cli-comp-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#aa00ff,#7b00d4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
+.cli-comp-name{font-size:12.5px;font-weight:700;color:#1a1a2e;}
+.cli-comp-mail{font-size:10.5px;color:#94a0b8;}
+.cli-cell{font-size:12px;color:#64708a;}
+.cli-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.cli-badge.ativo{background:rgba(34,197,94,.12);color:#16a34a;}
+.cli-badge.pendente{background:rgba(245,158,11,.14);color:#d97706;}
+.cli-del{cursor:pointer;color:#cbd3e3;font-size:16px;text-align:center;}
+.cli-del:hover{color:#ef4444;}
+.cli-empty{text-align:center;padding:50px 20px;color:#94a0b8;font-family:'Sora',sans-serif;font-size:12.5px;}
+.cli-note{margin-top:16px;background:rgba(170,0,255,.05);border:1px solid rgba(170,0,255,.15);border-radius:10px;padding:12px 14px;font-size:11px;color:#7b00d4;font-family:'Sora',sans-serif;line-height:1.5;}
+.pl-screen{display:none;flex-direction:column;flex:1;}
+.pl-hdr{display:flex;align-items:center;gap:12px;padding:18px 26px;background:linear-gradient(135deg,#1a0060,#0d1b8e);}
+.pl-hdr-ico{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;}
+.pl-hdr-title{font-size:16px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;}
+.pl-hdr-sub{font-size:11px;color:rgba(255,255,255,.6);font-family:'Sora',sans-serif;}
+.pl-body{flex:1;overflow-y:auto;padding:26px;background:#f0f2ff;}
+.pl-current{background:linear-gradient(135deg,#aa00ff,#7b00d4);border-radius:14px;padding:20px 24px;color:#fff;font-family:'Sora',sans-serif;margin-bottom:26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.pl-current-label{font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.05em;}
+.pl-current-name{font-size:26px;font-weight:800;margin-top:2px;}
+.pl-current-price{font-size:13px;opacity:.9;margin-top:4px;}
+.pl-current-status{background:rgba(255,255,255,.18);padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;}
+.pl-section{font-size:13px;font-weight:800;color:#0d1a6e;font-family:'Sora',sans-serif;margin-bottom:14px;}
+.pl-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:26px;}
+.pl-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(13,26,110,.06);border:2px solid transparent;display:flex;flex-direction:column;font-family:'Sora',sans-serif;}
+.pl-card.atual{border-color:#aa00ff;}
+.pl-card-tag{font-size:10px;font-weight:700;color:#aa00ff;background:rgba(170,0,255,.1);padding:3px 10px;border-radius:20px;align-self:flex-start;margin-bottom:10px;}
+.pl-card-name{font-size:17px;font-weight:800;color:#1a1a2e;}
+.pl-card-price{font-size:24px;font-weight:800;color:#0d1a6e;margin:8px 0 2px;}
+.pl-card-price span{font-size:12px;font-weight:500;color:#94a0b8;}
+.pl-card-feats{list-style:none;padding:0;margin:16px 0;display:flex;flex-direction:column;gap:9px;flex:1;}
+.pl-card-feats li{font-size:11.5px;color:#64708a;display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.pl-card-feats li svg{flex-shrink:0;margin-top:1px;}
+.pl-card-btn{padding:10px;border-radius:9px;border:none;font-weight:700;font-size:12px;cursor:pointer;font-family:'Sora',sans-serif;}
+.pl-card-btn.primary{background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;}
+.pl-card-btn.ghost{background:#f0f2ff;color:#64708a;}
+.pl-card-btn.current{background:rgba(170,0,255,.1);color:#aa00ff;cursor:default;}
+.pl-billing{background:#fff;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(13,26,110,.06);font-family:'Sora',sans-serif;}
+.pl-bill-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(13,26,110,.06);font-size:12.5px;}
+.pl-bill-row:last-child{border-bottom:none;}
+.pl-bill-k{color:#94a0b8;}
+.pl-bill-v{color:#1a1a2e;font-weight:600;}
+.pl-toggle{display:inline-flex;background:#fff;border-radius:12px;padding:4px;box-shadow:0 1px 4px rgba(13,26,110,.06);margin-bottom:18px;gap:2px;}
+.pl-toggle-opt{padding:8px 18px;border-radius:9px;font-size:12px;font-weight:700;color:#64708a;cursor:pointer;font-family:'Sora',sans-serif;border:none;background:none;display:flex;align-items:center;gap:7px;transition:all .15s;}
+.pl-toggle-opt.active{background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;}
+.pl-toggle-save{font-size:9px;font-weight:700;background:rgba(34,197,94,.15);color:#16a34a;padding:2px 7px;border-radius:20px;}
+.pl-toggle-opt.active .pl-toggle-save{background:rgba(255,255,255,.25);color:#fff;}
+.cf-screen{display:none;flex-direction:column;flex:1;}
+.cf-hdr{display:flex;align-items:center;gap:12px;padding:18px 26px;background:linear-gradient(135deg,#1a0060,#0d1b8e);}
+.cf-hdr-ico{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;}
+.cf-hdr-title{font-size:16px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;}
+.cf-hdr-sub{font-size:11px;color:rgba(255,255,255,.6);font-family:'Sora',sans-serif;}
+.cf-body{flex:1;overflow-y:auto;padding:26px;background:#f0f2ff;max-width:720px;}
+.cf-card{background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 1px 4px rgba(13,26,110,.06);margin-bottom:18px;font-family:'Sora',sans-serif;}
+.cf-card-title{font-size:13px;font-weight:800;color:#0d1a6e;margin-bottom:2px;}
+.cf-card-sub{font-size:11px;color:#94a0b8;margin-bottom:16px;}
+.cf-field{margin-bottom:14px;}
+.cf-field:last-child{margin-bottom:0;}
+.cf-label{font-size:11px;font-weight:700;color:#0d1a6e;display:block;margin-bottom:5px;}
+.cf-input{width:100%;padding:10px 12px;border:1px solid rgba(13,26,110,.15);border-radius:9px;font-size:12.5px;font-family:'Sora',sans-serif;color:#1a1a2e;box-sizing:border-box;outline:none;}
+.cf-input:focus{border-color:#aa00ff;}
+.cf-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(13,26,110,.06);}
+.cf-row:last-child{border-bottom:none;}
+.cf-row-txt{font-size:12.5px;font-weight:600;color:#1a1a2e;}
+.cf-row-sub{font-size:10.5px;color:#94a0b8;margin-top:1px;}
+.cf-switch{width:42px;height:23px;border-radius:20px;background:#cbd3e3;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s;border:none;}
+.cf-switch.on{background:#aa00ff;}
+.cf-switch::after{content:'';position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.cf-switch.on::after{transform:translateX(19px);}
+.cf-save{background:linear-gradient(135deg,#aa00ff,#7b00d4);color:#fff;border:none;padding:11px 20px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
+.cf-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:10px 16px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;}
 </style>
 </head>
 <body>
@@ -1188,7 +1296,7 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
               <div class="tr-dd-uname" id="trDdName">Usuário</div>
               <div class="tr-dd-email" id="trDdEmail">—</div>
             </div>
-            <div class="tr-dd-item" onclick="alert('Em breve!')">
+            <div class="tr-dd-item" onclick="abrirPerfil();document.getElementById('trDropdown').classList.remove('show')">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               Editar perfil
             </div>
@@ -1246,7 +1354,7 @@ body{font-family:'Sora',sans-serif;background:#f3f4f6;min-height:100vh;}
       <div class="nav-sep"></div>
       <div class="nav-item" id="navEquipe" onclick="navClick('equipe')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span class="nav-item-lbl">Equipe</span>
+        <span class="nav-item-lbl">Clientes</span>
       </div>
       <div class="nav-item" id="navPlano" onclick="navClick('plano')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -2709,7 +2817,229 @@ Objetivo: fechar vendas conduzindo o cliente ao pagamento."
     </div>
   </div>
 
+  <!-- ═══ CLIENTES (revenda) ═══ -->
+  <div class="cli-screen" id="equipeScreen">
+    <div class="cli-hdr">
+      <div class="cli-hdr-l">
+        <div class="cli-hdr-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <div class="cli-hdr-title">Meus Clientes</div>
+          <div class="cli-hdr-sub">Empresas que usam a plataforma Julia</div>
+        </div>
+      </div>
+      <button class="cli-add-btn" onclick="abrirNovoCliente()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Adicionar empresa
+      </button>
+    </div>
+    <div class="cli-body">
+      <div class="cli-metrics">
+        <div class="cli-metric"><div class="cli-metric-val" id="cliTotal">0</div><div class="cli-metric-lbl">Total de clientes</div></div>
+        <div class="cli-metric"><div class="cli-metric-val" id="cliAtivos">0</div><div class="cli-metric-lbl">Ativos</div></div>
+        <div class="cli-metric"><div class="cli-metric-val" id="cliPendentes">0</div><div class="cli-metric-lbl">Pendentes</div></div>
+      </div>
+
+      <div class="cli-table" id="cliTable"></div>
+
+      <div class="cli-note">
+        💡 Por enquanto esta tela organiza seus clientes visualmente. A criação automática de acesso (envio de login e senha por WhatsApp) será ativada quando ligarmos o sistema multi-cliente.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PLANO E COBRANÇA ═══ -->
+  <div class="pl-screen" id="planoScreen">
+    <div class="pl-hdr">
+      <div class="pl-hdr-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="pl-hdr-title">Plano e Cobrança</div>
+        <div class="pl-hdr-sub">Gerencie seu plano e veja os detalhes da cobrança</div>
+      </div>
+    </div>
+    <div class="pl-body">
+      <div class="pl-current">
+        <div>
+          <div class="pl-current-label">Seu plano atual</div>
+          <div class="pl-current-name" id="plCurrentName">Pro</div>
+          <div class="pl-current-price" id="plCurrentPrice">R$197/mês</div>
+        </div>
+        <div class="pl-current-status">● Ativo</div>
+      </div>
+
+      <div class="pl-section">Escolha seu plano</div>
+      <div class="pl-toggle" id="plToggle">
+        <button class="pl-toggle-opt" data-periodo="mensal" onclick="setPeriodoVenda('mensal')">Mensal</button>
+        <button class="pl-toggle-opt" data-periodo="trimestral" onclick="setPeriodoVenda('trimestral')">Trimestral</button>
+        <button class="pl-toggle-opt active" data-periodo="anual" onclick="setPeriodoVenda('anual')">Anual <span class="pl-toggle-save">melhor preço</span></button>
+      </div>
+      <div class="pl-cards" id="plCards"></div>
+
+      <div class="pl-section">Comprar conversas extras</div>
+      <div style="font-size:11.5px;color:#64708a;font-family:'Sora',sans-serif;margin-top:-6px;margin-bottom:14px;">Chegou no limite do seu plano? Adicione pacotes de conversas sem precisar fazer upgrade.</div>
+      <div class="pl-cards" id="plPacotes"></div>
+
+      <div class="pl-section">Detalhes da cobrança</div>
+      <div class="pl-billing">
+        <div class="pl-bill-row"><span class="pl-bill-k">Forma de pagamento</span><span class="pl-bill-v">Cartão e Pix</span></div>
+        <div class="pl-bill-row"><span class="pl-bill-k">Próxima cobrança</span><span class="pl-bill-v" id="plNextDate">—</span></div>
+        <div class="pl-bill-row"><span class="pl-bill-k">Ciclo</span><span class="pl-bill-v">Mensal</span></div>
+        <div class="pl-bill-row"><span class="pl-bill-k">Status</span><span class="pl-bill-v" style="color:#16a34a;">Em dia</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONFIGURAÇÕES ═══ -->
+  <div class="cf-screen" id="configScreen">
+    <div class="cf-hdr">
+      <div class="cf-hdr-ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div>
+        <div class="cf-hdr-title">Configurações</div>
+        <div class="cf-hdr-sub">Ajuste sua conta, notificações e o atendimento</div>
+      </div>
+    </div>
+    <div class="cf-body">
+
+      <div class="cf-card">
+        <div class="cf-card-title">Conta da empresa</div>
+        <div class="cf-card-sub">Dados que aparecem no seu painel e nas comunicações</div>
+        <div class="cf-field"><label class="cf-label">Nome da empresa</label><input class="cf-input" id="cfEmpresa" placeholder="Blee Social"></div>
+        <div class="cf-field"><label class="cf-label">E-mail de contato</label><input class="cf-input" id="cfEmail" type="email" placeholder="contato@empresa.com"></div>
+        <div class="cf-field"><label class="cf-label">Telefone / WhatsApp</label><input class="cf-input" id="cfTel" placeholder="+55 81 99999-9999"></div>
+      </div>
+
+      <div class="cf-card">
+        <div class="cf-card-title">Notificações</div>
+        <div class="cf-card-sub">Escolha o que você quer ser avisado</div>
+        <div class="cf-row"><div><div class="cf-row-txt">Novo lead recebido</div><div class="cf-row-sub">Avisa quando a Julia captar um novo lead</div></div><button class="cf-switch on" id="cfNotLead" onclick="cfToggle(this)"></button></div>
+        <div class="cf-row"><div><div class="cf-row-txt">Reunião confirmada</div><div class="cf-row-sub">Avisa quando um cliente agendar reunião</div></div><button class="cf-switch on" id="cfNotReuniao" onclick="cfToggle(this)"></button></div>
+        <div class="cf-row"><div><div class="cf-row-txt">Resumo diário</div><div class="cf-row-sub">Um resumo das conversas e leads do dia</div></div><button class="cf-switch" id="cfNotResumo" onclick="cfToggle(this)"></button></div>
+      </div>
+
+      <div class="cf-card">
+        <div class="cf-card-title">Atendimento da Julia</div>
+        <div class="cf-card-sub">Como e quando a Julia atende seus clientes</div>
+        <div class="cf-field"><label class="cf-label">Modo de atendimento</label>
+          <select class="cf-input" id="cfModo">
+            <option value="24h">24 horas por dia</option>
+            <option value="comercial">Apenas horário comercial</option>
+          </select>
+        </div>
+        <div class="cf-field"><label class="cf-label">Fuso horário</label>
+          <select class="cf-input" id="cfFuso">
+            <option value="America/Recife">Recife / Brasília (UTC-3)</option>
+            <option value="America/Manaus">Manaus (UTC-4)</option>
+            <option value="America/Rio_Branco">Rio Branco (UTC-5)</option>
+            <option value="America/Noronha">Fernando de Noronha (UTC-2)</option>
+          </select>
+        </div>
+        <div class="cf-row"><div><div class="cf-row-txt">Pausar a Julia</div><div class="cf-row-sub">Quando ligado, a Julia para de responder automaticamente</div></div><button class="cf-switch" id="cfPausar" onclick="cfToggle(this)"></button></div>
+      </div>
+
+      <div class="cf-card">
+        <div class="cf-card-title">Preferências</div>
+        <div class="cf-card-sub">Idioma do painel</div>
+        <div class="cf-field"><label class="cf-label">Idioma</label>
+          <select class="cf-input" id="cfIdioma"><option value="pt-BR">Português (Brasil)</option></select>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <button class="cf-save" onclick="salvarConfig()">Salvar configurações</button>
+        <span id="cfSavedMsg" style="font-size:11.5px;color:#16a34a;font-family:'Sora',sans-serif;display:none;">✓ Salvo</span>
+      </div>
+
+      <div class="cf-card">
+        <div class="cf-card-title">Sessão</div>
+        <div class="cf-card-sub">Encerrar o acesso neste e em outros dispositivos</div>
+        <button class="cf-danger" onclick="logout()">Sair de todos os dispositivos</button>
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- fim appScreen -->
+
+<!-- ═══ MODAL EDITAR PERFIL (fora do appScreen para exibir corretamente) ═══ -->
+<div class="pf-overlay" id="pfOverlay">
+  <div class="pf-modal">
+    <div class="pf-hdr">
+      <div class="pf-hdr-title">Editar perfil</div>
+      <button class="pf-close" onclick="fecharPerfil()">×</button>
+    </div>
+    <div class="pf-body">
+      <div class="pf-avatar-row">
+        <div class="pf-avatar" id="pfAvatarPreview">J</div>
+        <div class="pf-avatar-btn" onclick="document.getElementById('pfFotoInput').click()">Alterar foto</div>
+        <input type="file" id="pfFotoInput" accept="image/*" style="display:none;" onchange="pfPreviewFoto(event)">
+      </div>
+
+      <label class="pf-label">Nome de exibição</label>
+      <input class="pf-input" id="pfNome" placeholder="Seu nome">
+
+      <label class="pf-label">E-mail</label>
+      <input class="pf-input" id="pfEmail" type="email" placeholder="seu@email.com">
+
+      <div class="pf-section-title">Trocar senha (opcional)</div>
+      <label class="pf-label">Senha atual</label>
+      <input class="pf-input" id="pfSenhaAtual" type="password" placeholder="••••••••">
+      <label class="pf-label">Nova senha</label>
+      <input class="pf-input" id="pfSenhaNova" type="password" placeholder="Deixe em branco para não alterar">
+      <label class="pf-label">Confirmar nova senha</label>
+      <input class="pf-input" id="pfSenhaConf" type="password" placeholder="Repita a nova senha">
+      <div class="pf-hint">Deixe os campos de senha em branco se não quiser trocá-la agora.</div>
+
+      <div class="pf-actions">
+        <button class="pf-btn-save" onclick="salvarPerfil()">Salvar alterações</button>
+        <button class="pf-btn-cancel" onclick="fecharPerfil()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL NOVO CLIENTE ═══ -->
+<div class="pf-overlay" id="cliOverlay">
+  <div class="pf-modal">
+    <div class="pf-hdr">
+      <div class="pf-hdr-title">Adicionar empresa</div>
+      <button class="pf-close" onclick="fecharNovoCliente()">×</button>
+    </div>
+    <div class="pf-body">
+      <label class="pf-label">Nome da empresa</label>
+      <input class="pf-input" id="cliNome" placeholder="Ex: Imobiliária Alisson">
+
+      <label class="pf-label">WhatsApp da empresa</label>
+      <input class="pf-input" id="cliWhats" placeholder="Ex: +55 81 99999-9999">
+
+      <label class="pf-label">E-mail de contato</label>
+      <input class="pf-input" id="cliEmail" type="email" placeholder="contato@empresa.com">
+
+      <label class="pf-label">Plano</label>
+      <select class="pf-input" id="cliPlano">
+        <option value="Start">Start</option>
+        <option value="Pro">Pro</option>
+        <option value="Premium">Premium</option>
+      </select>
+
+      <label class="pf-label">Status</label>
+      <select class="pf-input" id="cliStatus">
+        <option value="pendente">Pendente (configurando)</option>
+        <option value="ativo">Ativo</option>
+      </select>
+
+      <div class="pf-actions">
+        <button class="pf-btn-save" onclick="salvarNovoCliente()">Adicionar</button>
+        <button class="pf-btn-cancel" onclick="fecharNovoCliente()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script>
 const SUPABASE_URL='https://acohtqxersbhgbrlzqii.supabase.co';
@@ -2729,17 +3059,14 @@ function doLogin(){
   const e=document.getElementById('loginEmail').value.trim();
   const p=document.getElementById('loginPassword').value;
   const err=document.getElementById('loginErr');
-  if(e===LOGIN_EMAIL&&p===LOGIN_PASS){
+  const perfil=pfLoad();
+  const emailVigente=perfil.email||LOGIN_EMAIL;
+  const senhaVigente=perfil.senha||LOGIN_PASS;
+  if(e===emailVigente&&p===senhaVigente){
     err.style.display='none';
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('appScreen').style.cssText='display:flex;flex-direction:row;width:100vw;height:100vh;overflow:hidden;';
-    // preencher title-bar com dados do usuário
-    const firstName=LOGIN_EMAIL.split('@')[0].split('.')[0];
-    const displayName=firstName.charAt(0).toUpperCase()+firstName.slice(1)+' S.';
-    if(document.getElementById('trUserName')) document.getElementById('trUserName').textContent=displayName;
-    if(document.getElementById('trAvatar')) document.getElementById('trAvatar').textContent=firstName.charAt(0).toUpperCase();
-    if(document.getElementById('trDdName')) document.getElementById('trDdName').textContent=displayName;
-    if(document.getElementById('trDdEmail')) document.getElementById('trDdEmail').textContent=LOGIN_EMAIL;
+    pfApplyToUI();
     init();
   }else{err.style.display='block';}
 }
@@ -2747,9 +3074,293 @@ function doLogout(){
   document.getElementById('appScreen').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
 }
+function logout(){doLogout();}
 function togglePwd(){
   const i=document.getElementById('loginPassword');
   i.type=i.type==='password'?'text':'password';
+}
+
+// ═══ PERFIL ═══
+// Lê o perfil salvo (nome, email, foto, senha) do navegador.
+function pfLoad(){
+  try{return JSON.parse(localStorage.getItem('perfil_julia')||'{}');}catch(e){return {};}
+}
+function pfApplyToUI(){
+  const p=pfLoad();
+  const nome=p.nome||(LOGIN_EMAIL.split('@')[0].charAt(0).toUpperCase()+LOGIN_EMAIL.split('@')[0].slice(1)+' S.');
+  const email=p.email||LOGIN_EMAIL;
+  const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setTxt('trUserName',nome);
+  setTxt('trDdName',nome);
+  setTxt('trDdEmail',email);
+  // Avatar: foto se houver, senão a inicial do nome
+  const av=document.getElementById('trAvatar');
+  if(av){
+    if(p.foto){av.innerHTML='<img src="'+p.foto+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">';}
+    else{av.textContent=(nome.trim()[0]||'J').toUpperCase();}
+  }
+}
+function abrirPerfil(){
+  const p=pfLoad();
+  const nome=p.nome||(document.getElementById('trUserName')?.textContent||'');
+  const email=p.email||LOGIN_EMAIL;
+  document.getElementById('pfNome').value=nome;
+  document.getElementById('pfEmail').value=email;
+  document.getElementById('pfSenhaAtual').value='';
+  document.getElementById('pfSenhaNova').value='';
+  document.getElementById('pfSenhaConf').value='';
+  // preview do avatar
+  const prev=document.getElementById('pfAvatarPreview');
+  if(p.foto){prev.innerHTML='<img src="'+p.foto+'">';}
+  else{prev.textContent=(nome.trim()[0]||'J').toUpperCase();}
+  prev.dataset.foto=p.foto||'';
+  document.getElementById('pfOverlay').classList.add('show');
+}
+function fecharPerfil(){document.getElementById('pfOverlay').classList.remove('show');}
+// Redimensiona a foto para no máx 160px e guarda como base64 (cabe no navegador).
+function pfPreviewFoto(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=160,scale=Math.min(max/img.width,max/img.height,1);
+      const c=document.createElement('canvas');
+      c.width=img.width*scale;c.height=img.height*scale;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const data=c.toDataURL('image/jpeg',0.85);
+      const prev=document.getElementById('pfAvatarPreview');
+      prev.innerHTML='<img src="'+data+'">';
+      prev.dataset.foto=data;
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function salvarPerfil(){
+  const nome=document.getElementById('pfNome').value.trim();
+  const email=document.getElementById('pfEmail').value.trim();
+  const sAtual=document.getElementById('pfSenhaAtual').value;
+  const sNova=document.getElementById('pfSenhaNova').value;
+  const sConf=document.getElementById('pfSenhaConf').value;
+  if(!nome){alert('Digite um nome de exibição.');return;}
+  if(!email||!email.includes('@')){alert('Digite um e-mail válido.');return;}
+  const p=pfLoad();
+  // Troca de senha (se preenchida)
+  if(sNova||sConf||sAtual){
+    const senhaVigente=p.senha||LOGIN_PASS;
+    if(sAtual!==senhaVigente){alert('A senha atual está incorreta.');return;}
+    if(sNova.length<6){alert('A nova senha deve ter ao menos 6 caracteres.');return;}
+    if(sNova!==sConf){alert('A nova senha e a confirmação não conferem.');return;}
+    p.senha=sNova;
+  }
+  p.nome=nome;
+  p.email=email;
+  const foto=document.getElementById('pfAvatarPreview').dataset.foto;
+  if(foto)p.foto=foto;
+  try{
+    localStorage.setItem('perfil_julia',JSON.stringify(p));
+  }catch(e){alert('Não foi possível salvar a foto (muito grande). Tente uma imagem menor.');return;}
+  pfApplyToUI();
+  fecharPerfil();
+  if(typeof jeShowToast==='function')jeShowToast('✅ Perfil atualizado!');
+}
+
+// ═══ CLIENTES (revenda) ═══
+function cliLoad(){
+  try{return JSON.parse(localStorage.getItem('clientes_julia')||'[]');}catch(e){return [];}
+}
+function cliSave(arr){
+  try{localStorage.setItem('clientes_julia',JSON.stringify(arr));}catch(e){alert('Não foi possível salvar.');}
+}
+function renderClientes(){
+  const arr=cliLoad();
+  const total=arr.length;
+  const ativos=arr.filter(c=>c.status==='ativo').length;
+  const pend=arr.filter(c=>c.status!=='ativo').length;
+  const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setTxt('cliTotal',total);setTxt('cliAtivos',ativos);setTxt('cliPendentes',pend);
+  const tbl=document.getElementById('cliTable');
+  if(!tbl)return;
+  if(!total){
+    tbl.innerHTML='<div class="cli-empty">Nenhuma empresa cadastrada ainda.<br>Clique em "Adicionar empresa" para começar.</div>';
+    return;
+  }
+  let html='<div class="cli-row head"><div>Empresa</div><div>WhatsApp</div><div>Plano</div><div>Status</div><div></div></div>';
+  arr.forEach((c,i)=>{
+    const inicial=(c.nome||'?').trim()[0].toUpperCase();
+    const badge=c.status==='ativo'?'<span class="cli-badge ativo">Ativo</span>':'<span class="cli-badge pendente">Pendente</span>';
+    html+=`<div class="cli-row">
+      <div class="cli-comp"><div class="cli-comp-av">${escHtml(inicial)}</div><div><div class="cli-comp-name">${escHtml(c.nome||'')}</div><div class="cli-comp-mail">${escHtml(c.email||'')}</div></div></div>
+      <div class="cli-cell">${escHtml(c.whats||'—')}</div>
+      <div class="cli-cell">${escHtml(c.plano||'—')}</div>
+      <div>${badge}</div>
+      <div class="cli-del" title="Remover" onclick="removerCliente(${i})">×</div>
+    </div>`;
+  });
+  tbl.innerHTML=html;
+}
+function abrirNovoCliente(){
+  document.getElementById('cliNome').value='';
+  document.getElementById('cliWhats').value='';
+  document.getElementById('cliEmail').value='';
+  document.getElementById('cliPlano').value='Start';
+  document.getElementById('cliStatus').value='pendente';
+  document.getElementById('cliOverlay').classList.add('show');
+}
+function fecharNovoCliente(){document.getElementById('cliOverlay').classList.remove('show');}
+function salvarNovoCliente(){
+  const nome=document.getElementById('cliNome').value.trim();
+  if(!nome){alert('Digite o nome da empresa.');return;}
+  const arr=cliLoad();
+  arr.push({
+    nome:nome,
+    whats:document.getElementById('cliWhats').value.trim(),
+    email:document.getElementById('cliEmail').value.trim(),
+    plano:document.getElementById('cliPlano').value,
+    status:document.getElementById('cliStatus').value,
+    criado:new Date().toISOString()
+  });
+  cliSave(arr);
+  fecharNovoCliente();
+  renderClientes();
+  if(typeof jeShowToast==='function')jeShowToast('✅ Empresa adicionada!');
+}
+function removerCliente(i){
+  if(!confirm('Remover esta empresa da lista?'))return;
+  const arr=cliLoad();
+  arr.splice(i,1);
+  cliSave(arr);
+  renderClientes();
+}
+
+// ═══ PLANO E COBRANÇA ═══
+const PLANOS_VENDA=[
+  {id:'Start',preco:997,desc:'Para começar',feats:['1 número de WhatsApp','Julia respondendo 24h','Painel de conversas e leads','Qualificação automática de leads','Suporte por e-mail']},
+  {id:'Plus',preco:1597,desc:'Mais popular',feats:['Tudo do Start','Integração com CRM','Agendamento de reuniões','Relatórios de leads','Suporte prioritário']},
+  {id:'Pro',preco:1997,desc:'Completo',feats:['Tudo do Plus','Múltiplos números','Atendimento dedicado','Consultoria mensal','Prioridade máxima no suporte']},
+  {id:'Personalizado',preco:null,desc:'Sob medida',feats:['Solução montada com você','Volume e recursos sob demanda','Integrações específicas','Condições negociadas','Atendimento exclusivo']}
+];
+function getPlanoVenda(){
+  try{return localStorage.getItem('plano_julia')||'Start';}catch(e){return 'Start';}
+}
+// Período selecionado: anual (base), trimestral (+200), mensal (+300)
+let periodoVenda='anual';
+function precoPorPeriodo(base){
+  if(base===null)return null;
+  if(periodoVenda==='trimestral')return base+200;
+  if(periodoVenda==='mensal')return base+300;
+  return base; // anual
+}
+function setPeriodoVenda(p){
+  periodoVenda=p;
+  document.querySelectorAll('#plToggle .pl-toggle-opt').forEach(b=>{
+    b.classList.toggle('active',b.dataset.periodo===p);
+  });
+  renderPlano();
+}
+function renderPlano(){
+  const atual=getPlanoVenda();
+  const pAtual=PLANOS_VENDA.find(p=>p.id===atual)||PLANOS_VENDA[0];
+  const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const precoAtual=precoPorPeriodo(pAtual.preco);
+  setTxt('plCurrentName',pAtual.id);
+  setTxt('plCurrentPrice',precoAtual?('R$'+precoAtual.toLocaleString('pt-BR')+'/mês'):'Sob consulta');
+  // próxima cobrança = hoje + 30 dias
+  const d=new Date();d.setDate(d.getDate()+30);
+  setTxt('plNextDate',d.toLocaleDateString('pt-BR'));
+  const wrap=document.getElementById('plCards');
+  if(!wrap)return;
+  const check='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+  const cobranca={mensal:'cobrado mensalmente',trimestral:'cobrado a cada 3 meses',anual:'cobrado anualmente'}[periodoVenda];
+  wrap.innerHTML=PLANOS_VENDA.map(p=>{
+    const ehAtual=p.id===atual;
+    const preco=precoPorPeriodo(p.preco);
+    const precoTxt=preco?('R$'+preco.toLocaleString('pt-BR')+'<span>/mês</span>'):'<span style="font-size:18px;font-weight:800;color:#0d1a6e;">Sob consulta</span>';
+    let btn;
+    if(ehAtual){btn='<button class="pl-card-btn current">Plano atual</button>';}
+    else if(p.preco===null){btn='<button class="pl-card-btn primary" onclick="trocarPlano(\''+p.id+'\')">Falar com a Blee</button>';}
+    else if(!pAtual.preco||p.preco>pAtual.preco){btn='<button class="pl-card-btn primary" onclick="trocarPlano(\''+p.id+'\')">Fazer upgrade</button>';}
+    else{btn='<button class="pl-card-btn ghost" onclick="trocarPlano(\''+p.id+'\')">Mudar para este</button>';}
+    return `<div class="pl-card ${ehAtual?'atual':''}">
+      ${ehAtual?'<div class="pl-card-tag">Seu plano</div>':'<div class="pl-card-tag" style="color:#94a0b8;background:rgba(13,26,110,.05);">'+p.desc+'</div>'}
+      <div class="pl-card-name">${p.id}</div>
+      <div class="pl-card-price">${precoTxt}</div>
+      ${p.preco!==null?'<div style="font-size:10px;color:#94a0b8;font-family:Sora,sans-serif;margin-top:-2px;">'+cobranca+'</div>':''}
+      <ul class="pl-card-feats">${p.feats.map(f=>'<li>'+check+escHtml(f)+'</li>').join('')}</ul>
+      ${btn}
+    </div>`;
+  }).join('');
+  // Pacotes de conversas extras
+  const pacotes=[
+    {qtd:'+50',label:'conversas',preco:67},
+    {qtd:'+100',label:'conversas',preco:117},
+    {qtd:'+200',label:'conversas',preco:197}
+  ];
+  const wrapP=document.getElementById('plPacotes');
+  if(wrapP){
+    wrapP.innerHTML=pacotes.map(pk=>`<div class="pl-card">
+      <div class="pl-card-tag" style="color:#16a34a;background:rgba(34,197,94,.1);">Pacote avulso</div>
+      <div class="pl-card-name">${pk.qtd} <span style="font-size:12px;font-weight:500;color:#94a0b8;">${pk.label}</span></div>
+      <div class="pl-card-price">R$${pk.preco.toLocaleString('pt-BR')}<span> único</span></div>
+      <div style="font-size:11px;color:#94a0b8;font-family:'Sora',sans-serif;margin:10px 0 16px;flex:1;">Adicionado na hora à sua conta. Não expira enquanto o plano estiver ativo.</div>
+      <button class="pl-card-btn primary" onclick="comprarPacote('${pk.qtd} ${pk.label}','${pk.preco}')">Comprar agora</button>
+    </div>`).join('');
+  }
+}
+function comprarPacote(desc,preco){
+  if(!confirm('Comprar '+desc+' por R$'+Number(preco).toLocaleString('pt-BR')+'?'))return;
+  if(typeof jeShowToast==='function')jeShowToast('✅ Pacote de '+desc+' adicionado!');
+}
+
+// ═══ CONFIGURAÇÕES ═══
+function cfToggle(el){el.classList.toggle('on');}
+function cfLoad(){
+  try{return JSON.parse(localStorage.getItem('config_julia')||'{}');}catch(e){return {};}
+}
+function renderConfig(){
+  const c=cfLoad();
+  const setV=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;};
+  const setSw=(id,on)=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',!!on);};
+  // valores padrão sensatos quando ainda não há nada salvo
+  setV('cfEmpresa',c.empresa!=null?c.empresa:'Blee Social');
+  setV('cfEmail',c.email!=null?c.email:(pfLoad().email||LOGIN_EMAIL));
+  setV('cfTel',c.tel||'');
+  setV('cfModo',c.modo||'24h');
+  setV('cfFuso',c.fuso||'America/Recife');
+  setV('cfIdioma',c.idioma||'pt-BR');
+  setSw('cfNotLead',c.notLead!==false);
+  setSw('cfNotReuniao',c.notReuniao!==false);
+  setSw('cfNotResumo',!!c.notResumo);
+  setSw('cfPausar',!!c.pausar);
+}
+function salvarConfig(){
+  const val=id=>document.getElementById(id)?.value||'';
+  const sw=id=>document.getElementById(id)?.classList.contains('on');
+  const c={
+    empresa:val('cfEmpresa'),email:val('cfEmail'),tel:val('cfTel'),
+    modo:val('cfModo'),fuso:val('cfFuso'),idioma:val('cfIdioma'),
+    notLead:sw('cfNotLead'),notReuniao:sw('cfNotReuniao'),notResumo:sw('cfNotResumo'),
+    pausar:sw('cfPausar')
+  };
+  try{localStorage.setItem('config_julia',JSON.stringify(c));}catch(e){}
+  const msg=document.getElementById('cfSavedMsg');
+  if(msg){msg.style.display='inline';setTimeout(()=>{msg.style.display='none';},2500);}
+  if(typeof jeShowToast==='function')jeShowToast('✅ Configurações salvas!');
+}
+function trocarPlano(id){
+  const pNovo=PLANOS_VENDA.find(p=>p.id===id);
+  if(pNovo.preco===null){
+    if(typeof jeShowToast==='function')jeShowToast('💬 Fale com a Blee para montar seu plano personalizado.');
+    return;
+  }
+  const preco=precoPorPeriodo(pNovo.preco);
+  const periodoTxt={mensal:'mensal',trimestral:'trimestral',anual:'anual'}[periodoVenda];
+  if(!confirm('Deseja mudar para o plano '+id+' '+periodoTxt+' (R$'+preco.toLocaleString('pt-BR')+'/mês)?'))return;
+  try{localStorage.setItem('plano_julia',id);}catch(e){}
+  renderPlano();
+  if(typeof jeShowToast==='function')jeShowToast('✅ Plano alterado para '+id+'!');
 }
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none') doLogin();
@@ -2780,7 +3391,7 @@ function navClick(aba){
   if(ativo)ativo.className='nav-item active';
 
   const isConv=aba==='conversas';
-  const TELAS_PROPRIAS=['database','leads','inicio','julia','integracoes','ajuda'];
+  const TELAS_PROPRIAS=['database','leads','inicio','julia','integracoes','ajuda','equipe','plano','config'];
   const isTelaPropia=TELAS_PROPRIAS.includes(aba);
 
   // Elementos de conversas
@@ -2818,7 +3429,7 @@ function navClick(aba){
   if(_csPrev)_csPrev.style.display='none';
 
   // Esconder todas as telas específicas
-  ['dbScreen','leadsScreen','inicioScreen','juliaScreen','integracoesScreen','ajudaScreen'].forEach(id=>{
+  ['dbScreen','leadsScreen','inicioScreen','juliaScreen','integracoesScreen','ajudaScreen','equipeScreen','planoScreen','configScreen'].forEach(id=>{
     const el=document.getElementById(id);
     if(el){el.style.display='none';}
   });
@@ -2833,7 +3444,7 @@ function navClick(aba){
     mainArea.style.minWidth='0';
     mainArea.style.position='relative';
 
-    const telaId={database:'dbScreen',leads:'leadsScreen',inicio:'inicioScreen',julia:'juliaScreen',integracoes:'integracoesScreen',ajuda:'ajudaScreen'}[aba];
+    const telaId={database:'dbScreen',leads:'leadsScreen',inicio:'inicioScreen',julia:'juliaScreen',integracoes:'integracoesScreen',ajuda:'ajudaScreen',equipe:'equipeScreen',plano:'planoScreen',config:'configScreen'}[aba];
     const tela=document.getElementById(telaId);
     if(tela){
       if(tela.parentElement!==mainArea){
@@ -2849,6 +3460,9 @@ function navClick(aba){
     else if(aba==='leads'){renderLeads();}
     else if(aba==='inicio'){renderInicio();}
     else if(aba==='julia'){renderJulia();}
+    else if(aba==='equipe'){renderClientes();}
+    else if(aba==='plano'){renderPlano();}
+    else if(aba==='config'){renderConfig();}
     return;
   }
 
@@ -3112,15 +3726,10 @@ function renderMessages(msgs,nome){
   }
   let html='',lastDate='',lastPapel='';
   msgs.forEach(m=>{
-    // O banco salva criado_em JÁ em horário de Recife, sem marcador de fuso.
-    // Removemos qualquer Z ou offset e lemos o horário exatamente como está.
-    const raw=String(m.criado_em||'').replace('T',' ').replace(/\.\d+/,'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'').trim();
-    const [datePart,timePart='00:00:00']=raw.split(' ');
-    const [Y,Mo,D]=datePart.split('-').map(Number);
-    const [h,mi]=timePart.split(':').map(Number);
-    const dRec=new Date(Y,(Mo||1)-1,D||1,h||0,mi||0);
-    const dateStr=dRec.toLocaleDateString('pt-BR');
-    const timeStr=String(h||0).padStart(2,'0')+':'+String(mi||0).padStart(2,'0');
+    // criado_em vem em UTC sem marcador; parseUTC trata como UTC e convertemos p/ Recife.
+    const d=parseUTC(m.criado_em)||new Date();
+    const dateStr=d.toLocaleDateString('pt-BR',{timeZone:'America/Recife'});
+    const timeStr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Recife'});
     const isJulia=m.papel==='julia'||m.papel==='assistente';
     const side=isJulia?'julia':'';
     if(dateStr!==lastDate){html+=`<div class="date-sep">${dateStr}</div>`;lastDate=dateStr;lastPapel='';}
@@ -3957,17 +4566,21 @@ function formatPhone(p){
   if(d.length===12)return`+${d.slice(0,2)} (${d.slice(2,4)}) ${d.slice(4,8)}-${d.slice(8)}`;
   return p;
 }
+// O banco salva criado_em em UTC, sem marcador de fuso (ex: "2026-06-09 01:31:20.597342").
+// Interpretamos como UTC e deixamos o navegador converter para o fuso de exibição.
+function parseUTC(v){
+  if(!v)return null;
+  let s=String(v).trim().replace(' ','T');
+  s=s.replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'');     // tira fuso se vier
+  s=s.replace(/(\.\d{3})\d+$/,'$1');                          // corta microssegundos
+  const d=new Date(s+'Z');                                    // Z = trata como UTC
+  return isNaN(d.getTime())?null:d;
+}
+const TZ='America/Recife';
 function relTime(iso){
-  if(!iso)return'';
-  // O banco salva em horário de Recife sem fuso. Lemos como está e comparamos
-  // com o "agora" também em Recife, sem reinterpretar como UTC.
-  const raw=String(iso).replace('T',' ').replace(/\.\d+/,'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'').trim();
-  const [dp,tp='00:00:00']=raw.split(' ');
-  const [Y,Mo,D]=dp.split('-').map(Number);
-  const [hh,mm,ss]=tp.split(':').map(Number);
-  const t=new Date(Y,(Mo||1)-1,D||1,hh||0,mm||0,ss||0).getTime();
-  const nowRec=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Recife'})).getTime();
-  const diff=nowRec-t;
+  const d=parseUTC(iso);
+  if(!d)return'';
+  const diff=Date.now()-d.getTime();
   const m=Math.floor(diff/60000);
   const h=Math.floor(diff/3600000);
   if(m<2)return'agora';
@@ -3976,10 +4589,9 @@ function relTime(iso){
   return`há ${Math.floor(h/24)}d`;
 }
 function fmtHora(iso){
-  if(!iso)return'';
-  const raw=String(iso).replace('T',' ').replace(/\.\d+/,'').replace(/Z$/,'').replace(/[+-]\d{2}:?\d{2}$/,'').trim();
-  const tp=(raw.split(' ')[1]||'00:00:00').split(':');
-  return String(tp[0]||'00').padStart(2,'0')+':'+String(tp[1]||'00').padStart(2,'0');
+  const d=parseUTC(iso);
+  if(!d)return'';
+  return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
 }
 // ═══ INTEGRAÇÕES ═══
 const integConfig={wa:{},meta:{},hubspot:{},rd:{},pipedrive:{},generic:{}};
